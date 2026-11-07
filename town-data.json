@@ -1,7 +1,28 @@
 {
  "account": "housepercomment",
- "events": [],
- "residents": [],
- "updated_at": "2026-11-07T22:01:25.772449+05:00",
+ "events": [
+  {
+   "ts": "2026-11-07T23:33:45.135761+05:00",
+   "type": "house",
+   "username": "flashquizapp"
+  }
+ ],
+ "residents": [
+  {
+   "best_streak": 1,
+   "claim_code_hash": "3b5e679e0bff00e08e55e9d9f8165e6ef47053e9c73062390dceefaeff69ec8c",
+   "display_comment": "house",
+   "following": false,
+   "joined_date": "2026-11-07",
+   "last_comment_date": "2026-11-07",
+   "level": 1,
+   "likes": 0,
+   "streak": 1,
+   "tier": "Cottage",
+   "unlocks": [],
+   "username": "flashquizapp"
+  }
+ ],
+ "updated_at": "2026-11-07T23:33:45.135761+05:00",
  "version": 1
 }
