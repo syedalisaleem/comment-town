@@ -5,19 +5,25 @@
    "ts": "2026-11-07T23:33:45.135761+05:00",
    "type": "house",
    "username": "flashquizapp"
+  },
+  {
+   "level": 2,
+   "ts": "2026-11-08T00:18:57.340517+05:00",
+   "type": "upgrade",
+   "username": "flashquizapp"
   }
  ],
  "residents": [
   {
-   "best_streak": 1,
+   "best_streak": 2,
    "claim_code_hash": "3b5e679e0bff00e08e55e9d9f8165e6ef47053e9c73062390dceefaeff69ec8c",
-   "display_comment": "house",
+   "display_comment": "fdgdffg",
    "following": true,
    "joined_date": "2026-11-07",
-   "last_comment_date": "2026-11-07",
-   "level": 1,
+   "last_comment_date": "2026-11-08",
+   "level": 2,
    "likes": 0,
-   "streak": 1,
+   "streak": 2,
    "tier": "Cottage",
    "unlocks": [
     "golden_mailbox",
@@ -26,6 +32,6 @@
    "username": "flashquizapp"
   }
  ],
- "updated_at": "2026-11-07T23:48:58.052771+05:00",
+ "updated_at": "2026-11-08T00:18:57.340517+05:00",
  "version": 1
 }
