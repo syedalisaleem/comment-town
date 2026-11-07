@@ -45,12 +45,13 @@ window.addEventListener('load',function(){
     }
   }
   *{box-sizing:border-box}
-  html,body{height:100%}
+  html,body{height:100%;height:100dvh;overscroll-behavior:none}
   body{
     margin:0;
     font-family:"Public Sans","Segoe UI",system-ui,-apple-system,sans-serif;
     color:var(--ink);
     overflow:hidden;
+    overscroll-behavior:none;
     background:#79bfe0;
   }
   button,input,textarea{font:inherit;color:inherit}
@@ -310,7 +311,15 @@ window.addEventListener('load',function(){
   .paint-row input[type=color]{width:64px;height:40px;border:1px solid var(--line);border-radius:9px;background:var(--paper);padding:3px}
   .scrim{position:fixed;inset:0;background:rgba(10,25,20,.38);z-index:25}
   .scrim[hidden]{display:none}
-  @media (max-width:640px){.live-panel{top:auto;bottom:calc(86px + env(safe-area-inset-bottom));max-height:32dvh}.live-panel .dm-box{max-height:84px}.controls{z-index:16}body.detail-open .live-panel{display:none}}
+  .live-close{display:none}
+  .mobile-dock{display:none}
+  .sheet-grab{display:none}
+  .quality-box{margin-top:14px;border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--paper-dim)}
+  .quality-box b{font-family:"Bricolage Grotesque",sans-serif;font-size:14px}
+  .quality-box p{margin:5px 0 9px}
+  .quality-seg{display:flex;gap:6px}
+  .quality-seg button{flex:1;min-height:44px;border:1.5px solid var(--line);background:var(--paper);border-radius:9px;font-weight:700;font-size:13px;color:var(--ink)}
+  .quality-seg button[aria-pressed="true"]{background:var(--leaf);border-color:var(--leaf);color:#fff}
 
   /* ---------- toast ---------- */
   .toast{
@@ -338,18 +347,117 @@ window.addEventListener('load',function(){
     backdrop-filter:blur(3px);white-space:nowrap;pointer-events:none;
   }
 
-  @media (max-width:640px){
+  /* ================= mobile (≤768px) — primary experience ================= */
+  @media (max-width:768px){
+    /* compact top bar: search + house count only, nothing else covers the town */
+    .topbar{gap:8px;padding:calc(8px + env(safe-area-inset-top)) 10px 0;align-items:stretch}
+    .search-card{padding:5px 5px 5px 8px;max-width:none;border-radius:12px}
+    .search-card input{font-size:16px;padding:10px 2px;min-height:44px}
+    /* searching expands the search card to the full top-bar width */
+    .topbar:focus-within .stats{display:none}
+    .topbar:focus-within .search-card{flex:1 1 100%}
+    .search-card .btn{min-height:44px;padding:10px 14px}
+    .stats{align-items:stretch}
     .stats .how-chip{display:none}
     .stats .day-chip{display:none}
-    .claim{bottom:auto;top:auto}
-    .claim{position:fixed;top:calc(118px + env(safe-area-inset-top));right:12px}
-    .claim.closed{top:auto;bottom:calc(12px + env(safe-area-inset-bottom));right:12px;left:12px;width:auto}
+    .stats .chip{padding:8px 11px;font-size:12px;min-height:44px}
+    .proto-note{display:none}
+    .btn{min-height:44px}
     .keys-hint{display:none}
-    .pad{grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px)}
-    .detail{bottom:calc(12px + env(safe-area-inset-bottom))}
-    body.detail-open .claim{display:none}
-    .controls{bottom:auto;top:calc(118px + env(safe-area-inset-top))}
-    .claim:not(.closed) ~ .controls{display:none}
+
+    /* floating dock: Activity / My house / Help */
+    .mobile-dock{
+      display:flex;flex-direction:column;gap:8px;
+      position:fixed;z-index:22;left:10px;
+      bottom:calc(10px + env(safe-area-inset-bottom));
+    }
+    .mobile-dock button{
+      position:relative;display:flex;align-items:center;gap:8px;
+      min-height:48px;padding:11px 16px;border-radius:999px;
+      border:1px solid var(--line);background:var(--chip-bg);
+      box-shadow:var(--shadow);font-weight:700;font-size:14px;color:var(--ink);
+      backdrop-filter:blur(4px);
+    }
+    .mobile-dock button[aria-expanded="true"]{background:var(--leaf);border-color:var(--leaf);color:#fff}
+    .mobile-dock .badge{
+      position:absolute;top:-6px;right:-4px;min-width:22px;height:22px;
+      border-radius:999px;background:var(--accent);color:#fff;
+      font-size:11.5px;font-weight:800;line-height:22px;text-align:center;padding:0 6px;
+      border:2px solid var(--paper);
+    }
+    .mobile-dock .badge[hidden]{display:none}
+    body.detail-open .mobile-dock,body.sheet-open .mobile-dock{display:none}
+
+    /* movement controls: bottom-right, big, translucent */
+    .controls{
+      left:auto;right:10px;z-index:16;align-items:flex-end;
+      bottom:calc(10px + env(safe-area-inset-bottom));
+    }
+    body.detail-open .controls,body.sheet-open .controls{display:none}
+    .pad{grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,52px);gap:6px}
+    .pad button{background:rgba(255,255,255,.78);font-size:19px;border-radius:14px;min-width:52px;min-height:52px}
+    @media (prefers-color-scheme:dark){.pad button{background:rgba(20,35,30,.78)}}
+    .ctl-row{gap:6px}
+    .ctl-row button{min-height:44px;padding:10px 10px;font-size:12.5px;background:rgba(255,255,255,.78)}
+    @media (prefers-color-scheme:dark){.ctl-row button{background:rgba(20,35,30,.78)}}
+
+    /* bottom sheets — shared behaviour */
+    .sheet-grab{display:block;width:44px;height:5px;border-radius:99px;background:var(--line);margin:2px auto 10px}
+    .live-panel,.claim,.how{
+      left:0;right:0;top:auto;width:auto;max-width:none;
+      bottom:0;border-radius:20px 20px 0 0;border-left:0;border-right:0;border-bottom:0;
+      max-height:72dvh;z-index:28;
+      transform:translateY(105%);transition:transform .28s ease;
+      padding-bottom:env(safe-area-inset-bottom);
+    }
+    .live-panel.sheet-open,.claim.sheet-open,.how.sheet-open{transform:translateY(0)}
+    .live-panel{display:none}
+    .live-panel.sheet-open{display:flex}
+    .claim{display:none}
+    .claim.sheet-open{display:block}
+    .claim .claim-body{max-height:calc(72dvh - 62px);overflow:auto;-webkit-overflow-scrolling:touch}
+    .claim-body input,.claim-body textarea{font-size:16px;min-height:48px}
+    .claim-body .btn{min-height:48px}
+    .dc-btns button{min-height:48px}
+    .how{overflow:auto;-webkit-overflow-scrolling:touch;padding:12px 18px calc(18px + env(safe-area-inset-bottom))}
+    .how:not([hidden]){display:block}
+    .live-close{
+      display:flex;align-items:center;justify-content:center;
+      width:44px;height:44px;border-radius:50%;flex:0 0 auto;
+      border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;font-size:16px;
+    }
+    .live-head{gap:6px}
+    .live-head #livePauseBtn{min-height:44px;padding:8px 14px}
+    .live-list{-webkit-overflow-scrolling:touch}
+    .dm-box{max-height:132px}
+    #claimDmSlot .dm-box{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;max-height:170px}
+
+    /* house detail = bottom sheet, max ~55% height */
+    .detail{
+      left:0;right:0;bottom:0;width:auto;max-width:none;
+      max-height:55dvh;overflow:auto;-webkit-overflow-scrolling:touch;
+      border-radius:20px 20px 0 0;border-left:0;border-right:0;border-bottom:0;
+      padding:14px 18px calc(16px + env(safe-area-inset-bottom));
+      transform:none;
+    }
+    .detail .close{width:44px;height:44px;font-size:18px;top:8px;right:8px}
+    .detail .actions .btn{min-height:48px}
+    .editor-acc button{min-height:44px;padding:9px 14px}
+
+    /* modals become bottom sheets too */
+    .modal-panel{
+      left:0;right:0;top:auto;bottom:0;width:auto;max-width:none;
+      transform:none;border-radius:20px 20px 0 0;border-left:0;border-right:0;border-bottom:0;
+      max-height:82dvh;padding:16px 18px calc(18px + env(safe-area-inset-bottom));
+    }
+    .modal-panel .close{width:44px;height:44px}
+    .modal-panel input[type=text],.modal-panel input[type=password]{font-size:16px;min-height:48px}
+    .modal-panel .btn{min-height:48px}
+
+    .toast{top:calc(66px + env(safe-area-inset-top));width:calc(100vw - 24px)}
+  }
+  @media (max-width:768px) and (prefers-reduced-motion: reduce){
+    .live-panel,.claim,.how{transition:none}
   }
   @media (prefers-reduced-motion: reduce){
     .toast{transition:none}
@@ -380,13 +488,14 @@ window.addEventListener('load',function(){
 <div class="proto-note">Prototype — auto feed simulates real Instagram sync · houses below include example residents</div>
 
 <aside class="live-panel" id="livePanel" aria-label="Live activity feed">
-  <div class="live-head"><span><span class="live-dot" id="liveDot"></span><b>Live activity</b> <span style="font-size:11px;opacity:.85">AUTO</span></span><button type="button" id="livePauseBtn" aria-pressed="false">Pause</button></div>
+  <div class="live-head"><span><span class="live-dot" id="liveDot"></span><b>Live activity</b> <span style="font-size:11px;opacity:.85">AUTO</span></span><span style="display:flex;gap:6px;align-items:center"><button type="button" id="livePauseBtn" aria-pressed="false">Pause</button><button type="button" class="live-close" id="liveClose" aria-label="Close activity panel">✕</button></span></div>
   <p class="live-sub">Completely auto in the real version: Instagram is polled every ~15 min — a comment auto-builds a house, likes &amp; follows auto-unlock accessories. No manual step. This prototype fires a simulated event every ~20 seconds.</p>
   <ul class="live-list" id="liveList"><li><span class="when">Now</span> · Auto-sync is on. The next simulated comment, like or follow will appear here and update the town by itself.</li></ul>
-  <div class="dm-box" aria-label="Your DMs simulation"><h3>Your DMs (simulation)</h3><div id="dmList"><div class="dm-item">No new house DMs yet. When a house is auto-built, its 4-digit claim code arrives here — use it in “Edit my house”.</div></div></div>
+  <div class="dm-box" id="dmBox" aria-label="Your DMs simulation"><h3>Your DMs (simulation)</h3><div id="dmList"><div class="dm-item">No new house DMs yet. When a house is auto-built, its 4-digit claim code arrives here — use it in “Edit my house”.</div></div></div>
 </aside>
 
 <section class="how" id="howPanel" hidden aria-label="How Comment Town works">
+  <span class="sheet-grab" aria-hidden="true"></span>
   <h2>Completely auto — comment, like, follow</h2>
   <ol>
     <li><b>Comment = house, automatically.</b> Comment on the latest @comment.town post and your Level 1 Cottage is auto-built on the next free plot — no form, no waiting for a person. In the real version sync polls every ~15 min; here the Live activity feed simulates it every ~20 sec.</li>
@@ -408,6 +517,15 @@ window.addEventListener('load',function(){
     <li><span>Lv 91–100</span><b>Legend Mansion</b></li>
   </ul>
   <p>Real pipeline: comment/like/follow sync every ~15 min, houses and unlocks applied automatically. This prototype runs on a simulated town clock and a simulated live feed — nothing is really saved, posted or synced. The 20 residents are examples spanning all 10 tiers.</p>
+  <div class="quality-box">
+    <b>Graphics quality</b>
+    <p>Auto picks the smooth setting for your device — High on desktop, balanced on phones. Low turns shadows off for the smoothest frame rate on older phones.</p>
+    <div class="quality-seg" role="group" aria-label="Graphics quality">
+      <button type="button" data-quality="auto" aria-pressed="true">Auto</button>
+      <button type="button" data-quality="high" aria-pressed="false">High</button>
+      <button type="button" data-quality="low" aria-pressed="false">Low</button>
+    </div>
+  </div>
 </section>
 
 <aside class="claim closed" id="claimPanel">
@@ -416,6 +534,7 @@ window.addEventListener('load',function(){
     <span class="chev" aria-hidden="true">▾</span>
   </button>
   <div class="claim-body" id="claimBody">
+    <div id="claimDmSlot"></div>
     <div class="day-controls" aria-label="Simulated town clock">
       <div class="dc-head"><b id="dcDayLabel">Town Day 1</b><span class="dc-date" id="dcDateLabel">Sat 7 Nov 2026</span></div>
       <p><b>Streak rule:</b> comment on the <b>next day</b> (no skip) = <b>+1 level</b>, up to 100. Same day again = nothing. Skip a day = streak breaks, level kept, no upgrade on the return comment.</p>
@@ -504,6 +623,12 @@ window.addEventListener('load',function(){
   </div>
   <div class="keys-hint">Drag to orbit · Scroll to zoom · W A S D to wander · Tap a house</div>
 </div>
+
+<nav class="mobile-dock" aria-label="Town panels">
+  <button type="button" id="activityBtn" aria-expanded="false" aria-controls="livePanel">Activity<span class="badge" id="activityBadge" hidden>0</span></button>
+  <button type="button" id="myHouseBtn" aria-expanded="false" aria-controls="claimPanel">My house</button>
+  <button type="button" id="helpBtn" aria-expanded="false" aria-controls="howPanel"><span aria-hidden="true" style="font-weight:800;font-size:17px">?</span> Help</button>
+</nav>
 
 <div class="toast" id="toast" role="status"></div>
 
@@ -660,6 +785,7 @@ function addFeed(html){
   li.innerHTML='<span class="when">Day '+townDay+' · just now</span> · '+html;
   list.insertBefore(li,list.firstChild);
   while(list.children.length>30)list.removeChild(list.lastChild);
+  noteActivity();
 }
 function addDM(rec){
   var box=document.getElementById('dmList'); if(!box||!rec)return;
@@ -671,13 +797,14 @@ function addDM(rec){
 
 /* ================= three setup ================= */
 var container=document.getElementById('scene');
+var mobileMQ=window.matchMedia('(max-width: 768px)');
 var scene=new THREE.Scene();
 scene.background=new THREE.Color(0x8ec9e8);
 scene.fog=new THREE.Fog(0x8ec9e8,120,240);
 var camera=new THREE.PerspectiveCamera(55,innerWidth/innerHeight,0.1,500);
 camera.position.set(38,34,52);
-var renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+var renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,mobileMQ.matches?1.5:2));
 renderer.setSize(innerWidth,innerHeight);
 renderer.shadowMap.enabled=true;
 renderer.shadowMap.type=THREE.PCFShadowMap;
@@ -691,11 +818,14 @@ controls.target.set(0,2,0);
 controls.enableDamping=true;controls.dampingFactor=0.06;
 controls.maxPolarAngle=Math.PI*0.49;
 controls.minDistance=8;controls.maxDistance=130;
+controls.enablePan=true;
+if(THREE.TOUCH){ controls.touches={ONE:THREE.TOUCH.ROTATE,TWO:THREE.TOUCH.DOLLY_PAN}; }
+if(THREE.MOUSE){ controls.mouseButtons={LEFT:THREE.MOUSE.ROTATE,MIDDLE:THREE.MOUSE.DOLLY,RIGHT:THREE.MOUSE.PAN}; }
 
 var hemi=new THREE.HemisphereLight(0xcfe8ff,0x6aa84f,0.95);scene.add(hemi);
 var sun=new THREE.DirectionalLight(0xfff2d0,1.6);
 sun.position.set(45,60,25);sun.castShadow=true;
-sun.shadow.mapSize.set(2048,2048);
+sun.shadow.mapSize.set(mobileMQ.matches?1024:2048,mobileMQ.matches?1024:2048);
 sun.shadow.camera.left=-85;sun.shadow.camera.right=85;
 sun.shadow.camera.top=85;sun.shadow.camera.bottom=-85;
 sun.shadow.camera.far=200;sun.shadow.bias=-0.0004;
@@ -767,7 +897,7 @@ for(var k=0;k<14;k++){
 /* clouds */
 var clouds=[];
 var cloudMat=new THREE.MeshLambertMaterial({color:0xffffff,transparent:true,opacity:0.92});
-for(var ci=0;ci<7;ci++){
+for(var ci=0;ci<(mobileMQ.matches?4:7);ci++){
   var cg=new THREE.Group();
   var cr=rng(900+ci);
   for(var b=0;b<4;b++){
@@ -791,6 +921,7 @@ for(var li=-3;li<=3;li++){
 
 /* ================= houses ================= */
 var houses=[];           /* {user, comment, level, group, pos, plot, ringMats} */
+var animatedStars=[];    /* roof stars/halos, collected at build time so the render loop never traverses the scene */
 var byUser={};
 var pickMeshes=[];       /* meshes mapped to house index */
 var nextPlot=0;
@@ -991,10 +1122,10 @@ function buildHouseMesh(rec){
     });
     var starSize=0.5+tier*0.06;
     var star=new THREE.Mesh(new THREE.OctahedronGeometry(starSize),new THREE.MeshBasicMaterial({color:tier>=9?0xffc53d:0xffd968}));
-    star.position.y=roofTopY+0.7;star.name='roofStar';g.add(star);
+    star.position.y=roofTopY+0.7;star.name='roofStar';g.add(star);animatedStars.push(star);
     if(tier>=9){ /* legend halo ring */
       var halo=new THREE.Mesh(new THREE.TorusGeometry(1.15,0.09,8,24),new THREE.MeshBasicMaterial({color:0xffc53d}));
-      halo.rotation.x=Math.PI/2.4;halo.position.y=roofTopY+0.7;halo.name='roofStar';g.add(halo);
+      halo.rotation.x=Math.PI/2.4;halo.position.y=roofTopY+0.7;halo.name='roofStar';g.add(halo);animatedStars.push(halo);
     }
   }
 
@@ -1096,9 +1227,12 @@ function processComment(user,comment){
 
 function rebuildHouse(rec){
   if(rec.group){
+    var dead=[];
     rec.group.traverse(function(o){
+      dead.push(o);
       if(o.isMesh){var i=pickMeshes.indexOf(o);if(i>=0)pickMeshes.splice(i,1);}
     });
+    animatedStars=animatedStars.filter(function(o){return dead.indexOf(o)<0;});
     scene.remove(rec.group);
   }
   rec._signBaseY=undefined;
@@ -1182,6 +1316,7 @@ function renderStreak(rec){
   else { btn.textContent='Comment today → restart streak (no upgrade)'; }
 }
 function selectHouse(rec,fly){
+  closeSheets();
   selected=rec;showRing(rec);
   document.getElementById('detailUser').textContent='@'+rec.user;
   document.getElementById('detailAddr').textContent='Plot '+rec.plotNo+' · '+rec.street+(rec.isExample?' · Example resident':'');
@@ -1395,19 +1530,34 @@ document.getElementById('livePauseBtn').addEventListener('click',function(){
 
 /* ================= picking ================= */
 var ray=new THREE.Raycaster();var mouse=new THREE.Vector2();
-var downPos=null;
-renderer.domElement.addEventListener('pointerdown',function(e){downPos=[e.clientX,e.clientY];});
+var downPos=null,downTime=0;
+var _proj=new THREE.Vector3();
+renderer.domElement.addEventListener('pointerdown',function(e){downPos=[e.clientX,e.clientY];downTime=(window.performance&&performance.now)?performance.now():Date.now();});
+renderer.domElement.addEventListener('pointercancel',function(){downPos=null;});
 renderer.domElement.addEventListener('pointerup',function(e){
   if(!downPos)return;
   var dx=e.clientX-downPos[0],dy=e.clientY-downPos[1];downPos=null;
-  if(dx*dx+dy*dy>36)return; /* it was a drag, not a tap */
+  var now=(window.performance&&performance.now)?performance.now():Date.now();
+  /* A tap = short (<350ms) and near-stationary (<16px). Anything else was an orbit/pinch. */
+  if(dx*dx+dy*dy>256||now-downTime>350)return;
   mouse.x=(e.clientX/innerWidth)*2-1;mouse.y=-(e.clientY/innerHeight)*2+1;
   ray.setFromCamera(mouse,camera);
   var hits=ray.intersectObjects(pickMeshes,false);
   if(hits.length){
     var u=hits[0].object.userData.houseUser;
-    if(u&&byUser[u])selectHouse(byUser[u],false);
+    if(u&&byUser[u]){ selectHouse(byUser[u],false); return; }
   }
+  /* Generous fallback for small screens: nearest house within 70px of the tap counts. */
+  var best=null,bestD=70;
+  for(var hi=0;hi<houses.length;hi++){
+    var rec=houses[hi];
+    _proj.set(rec.pos.x,4,rec.pos.z).project(camera);
+    if(_proj.z>1)continue;
+    var sx=(_proj.x*0.5+0.5)*innerWidth, sy=(-_proj.y*0.5+0.5)*innerHeight;
+    var ddx=sx-e.clientX, ddy=sy-e.clientY, dd=Math.sqrt(ddx*ddx+ddy*ddy);
+    if(dd<bestD){bestD=dd;best=rec;}
+  }
+  if(best)selectHouse(best,false);
 });
 
 /* ================= search ================= */
@@ -1428,7 +1578,12 @@ function setClaim(open){
   claimPanel.classList.toggle('closed',!open);
   claimToggle.setAttribute('aria-expanded',open?'true':'false');
 }
-claimToggle.addEventListener('click',function(){ setClaim(claimPanel.classList.contains('closed')); });
+claimToggle.addEventListener('click',function(){
+  var willOpen=claimPanel.classList.contains('closed');
+  setClaim(willOpen);
+  if(willOpen){ if(mobileMQ.matches){ closeSheets('claim'); claimPanel.classList.add('sheet-open'); syncSheetBody(); } }
+  else { claimPanel.classList.remove('sheet-open'); syncSheetBody(); }
+});
 function advanceTownDay(n,label){
   townDay+=n;
   updateTownClock();
@@ -1463,7 +1618,120 @@ howToggle.addEventListener('click',function(){
   var open=howPanel.hidden;
   howPanel.hidden=!open;
   howToggle.setAttribute('aria-expanded',open?'true':'false');
+  var hb=document.getElementById('helpBtn'); if(hb)hb.setAttribute('aria-expanded',open?'true':'false');
+  if(open){
+    closeSheets('how');
+    requestAnimationFrame(function(){ howPanel.classList.add('sheet-open'); syncSheetBody(); });
+  }else{
+    howPanel.classList.remove('sheet-open'); syncSheetBody();
+  }
 });
+
+/* ================= mobile bottom sheets + quality ================= */
+var livePanelEl=document.getElementById('livePanel');
+var activityBtn=document.getElementById('activityBtn');
+var myHouseBtn=document.getElementById('myHouseBtn');
+var helpBtn=document.getElementById('helpBtn');
+var activityBadge=document.getElementById('activityBadge');
+var unreadActivity=0;
+function noteActivity(){
+  if(!mobileMQ.matches)return;
+  if(livePanelEl.classList.contains('sheet-open'))return;
+  unreadActivity++;
+  activityBadge.hidden=false;
+  activityBadge.textContent=unreadActivity>99?'99+':String(unreadActivity);
+}
+function syncSheetBody(){
+  var any=livePanelEl.classList.contains('sheet-open')||claimPanel.classList.contains('sheet-open')||(howPanel&&howPanel.classList.contains('sheet-open'));
+  document.body.classList.toggle('sheet-open',!!any);
+  activityBtn.setAttribute('aria-expanded',livePanelEl.classList.contains('sheet-open')?'true':'false');
+  myHouseBtn.setAttribute('aria-expanded',claimPanel.classList.contains('sheet-open')?'true':'false');
+}
+function closeSheets(except){
+  if(!mobileMQ.matches){ syncSheetBody(); return; } /* sheets are a mobile-only concept — desktop panels behave exactly as before */
+  if(except!=='live')livePanelEl.classList.remove('sheet-open');
+  if(except!=='claim'){ claimPanel.classList.remove('sheet-open'); if(mobileMQ.matches&&!claimPanel.classList.contains('closed'))setClaim(false); }
+  if(except!=='how'&&howPanel&&!howPanel.hidden){ howPanel.classList.remove('sheet-open'); howPanel.hidden=true; howToggle.setAttribute('aria-expanded','false'); if(helpBtn)helpBtn.setAttribute('aria-expanded','false'); }
+  syncSheetBody();
+}
+function placeDM(){
+  var dm=document.getElementById('dmBox'); if(!dm)return;
+  if(mobileMQ.matches){
+    var slot=document.getElementById('claimDmSlot');
+    if(slot&&dm.parentNode!==slot)slot.appendChild(dm);
+  }else if(dm.parentNode!==livePanelEl){
+    livePanelEl.appendChild(dm);
+  }
+}
+activityBtn.addEventListener('click',function(){
+  var open=!livePanelEl.classList.contains('sheet-open');
+  if(open){
+    closeSheets('live');
+    livePanelEl.classList.add('sheet-open');
+    unreadActivity=0; activityBadge.hidden=true;
+  }else{
+    livePanelEl.classList.remove('sheet-open');
+  }
+  syncSheetBody();
+});
+document.getElementById('liveClose').addEventListener('click',function(){
+  livePanelEl.classList.remove('sheet-open'); syncSheetBody();
+});
+myHouseBtn.addEventListener('click',function(){
+  var open=!claimPanel.classList.contains('sheet-open');
+  if(open){
+    closeSheets('claim');
+    placeDM();
+    setClaim(true);
+    claimPanel.classList.add('sheet-open');
+  }else{
+    claimPanel.classList.remove('sheet-open'); setClaim(false);
+  }
+  syncSheetBody();
+});
+helpBtn.addEventListener('click',function(){ howToggle.click(); });
+placeDM();
+
+/* graphics quality: Auto (default) / High / Low */
+var qualityMode='auto';
+function setShadowSize(s){
+  if(sun.shadow.mapSize.x===s)return;
+  sun.shadow.mapSize.set(s,s);
+  if(sun.shadow.map){ sun.shadow.map.dispose(); sun.shadow.map=null; }
+}
+function applyQuality(){
+  var q=qualityMode;
+  var eff=q==='auto'?(mobileMQ.matches?'balanced':'high'):q;
+  var dpr=window.devicePixelRatio||1;
+  if(eff==='low'){
+    renderer.setPixelRatio(1);
+    sun.castShadow=false;
+  }else if(eff==='balanced'){
+    renderer.setPixelRatio(Math.min(dpr,1.5));
+    sun.castShadow=true; setShadowSize(1024);
+  }else{
+    renderer.setPixelRatio(Math.min(dpr,2));
+    sun.castShadow=true; setShadowSize(2048);
+  }
+}
+document.querySelectorAll('[data-quality]').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    qualityMode=btn.getAttribute('data-quality');
+    document.querySelectorAll('[data-quality]').forEach(function(b){ b.setAttribute('aria-pressed',b===btn?'true':'false'); });
+    applyQuality();
+    toast('Graphics quality: '+qualityMode.charAt(0).toUpperCase()+qualityMode.slice(1)+(qualityMode==='auto'?(mobileMQ.matches?' — balanced settings for this phone.':' — high settings for this screen.'):''));
+  });
+});
+function onViewportModeChange(){
+  applyQuality();
+  placeDM();
+  var si=document.getElementById('searchInput');
+  if(si)si.placeholder=mobileMQ.matches?'Find your house…':'Find your house — type a username…';
+  if(!mobileMQ.matches){ livePanelEl.classList.remove('sheet-open'); claimPanel.classList.remove('sheet-open'); if(howPanel)howPanel.classList.remove('sheet-open'); syncSheetBody(); }
+}
+if(mobileMQ.addEventListener)mobileMQ.addEventListener('change',onViewportModeChange);
+else if(mobileMQ.addListener)mobileMQ.addListener(onViewportModeChange);
+onViewportModeChange();
 
 /* ================= movement ================= */
 var keys={};
@@ -1482,10 +1750,11 @@ document.querySelectorAll('[data-move]').forEach(function(btn){
   btn.addEventListener('pointerleave',off);
   btn.addEventListener('pointercancel',off);
 });
+var _panF=new THREE.Vector3(),_panR=new THREE.Vector3(),_panMv=new THREE.Vector3(),_panUp=new THREE.Vector3(0,1,0),_tourOff=new THREE.Vector3(),_dollyDir=new THREE.Vector3();
 function panStep(){
-  var f=new THREE.Vector3();camera.getWorldDirection(f);f.y=0;f.normalize();
-  var r=new THREE.Vector3().crossVectors(f,new THREE.Vector3(0,1,0)).negate();
-  var mv=new THREE.Vector3();
+  var f=_panF;camera.getWorldDirection(f);f.y=0;f.normalize();
+  var r=_panR.crossVectors(f,_panUp).negate();
+  var mv=_panMv.set(0,0,0);
   var sp=0.55;
   if(keys['w']||keys['arrowup']||held.forward)mv.add(f);
   if(keys['s']||keys['arrowdown']||held.back)mv.sub(f);
@@ -1501,7 +1770,7 @@ function panStep(){
   }
 }
 function dolly(factor){
-  var dir=camera.position.clone().sub(controls.target).multiplyScalar(factor);
+  var dir=_dollyDir.copy(camera.position).sub(controls.target).multiplyScalar(factor);
   var len=Math.max(9,Math.min(125,dir.length()));
   dir.normalize().multiplyScalar(len);
   camera.position.copy(controls.target).add(dir);
@@ -1534,7 +1803,7 @@ function animate(){
       if(flight.t>=1)flight=null;
     }else if(touring&&!reduced){
       var ang=dt*0.12;
-      var off=camera.position.clone().sub(controls.target);
+      var off=_tourOff.copy(camera.position).sub(controls.target);
       var cs=Math.cos(ang),sn=Math.sin(ang);
       var nx=off.x*cs-off.z*sn,nz=off.x*sn+off.z*cs;
       camera.position.set(controls.target.x+nx,camera.position.y,controls.target.z+nz);
@@ -1550,7 +1819,7 @@ function animate(){
       rec._sign.position.y=rec._signBaseY+(reduced?0:Math.sin(t*1.4+i*1.7)*0.09);
     });
     if(ring.visible){var s=1+Math.sin(t*3)*0.03;ring.scale.set(s,s,1);}
-    scene.traverse(function(o){ if(o.name==='roofStar'){o.rotation.y+=dt*1.4;} });
+    for(var asi=0;asi<animatedStars.length;asi++){ animatedStars[asi].rotation.y+=dt*1.4; }
     controls.update();
     renderer.render(scene,camera);
   }catch(err){
