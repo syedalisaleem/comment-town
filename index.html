@@ -267,6 +267,51 @@ window.addEventListener('load',function(){
   .tiers-list b{color:var(--ink);white-space:nowrap}
   .detail{max-height:calc(100dvh - 150px);overflow:auto}
 
+  /* ---------- live feed / DMs / editor / accessories ---------- */
+  .live-panel{position:fixed;z-index:18;left:12px;top:76px;width:min(322px,calc(100vw - 24px));background:var(--card-bg);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;max-height:calc(100dvh - 210px);display:flex;flex-direction:column}
+  .live-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:11px 13px;background:#17352e;color:#fff}
+  .live-head b{font-family:"Bricolage Grotesque",sans-serif;font-size:15px}
+  .live-dot{width:9px;height:9px;border-radius:50%;background:#ff5a4e;display:inline-block;margin-right:6px;box-shadow:0 0 0 4px rgba(255,90,78,.2)}
+  .live-dot.paused{background:#ffc53d;box-shadow:none}
+  .live-head button{border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:700}
+  .live-sub{font-size:11.5px;line-height:1.45;color:var(--ink-soft);padding:9px 12px 4px}
+  .live-list{list-style:none;margin:4px 0 0;padding:0 12px 10px;overflow:auto}
+  .live-list li{font-size:12.5px;line-height:1.45;padding:8px 0;border-bottom:1px dashed var(--line)}
+  .live-list li:last-child{border-bottom:0}
+  .live-list b{color:var(--ink)}
+  .live-list .when{color:var(--ink-soft);font-size:11px;font-weight:700}
+  .dm-box{border-top:1px solid var(--line);background:var(--paper-dim);padding:10px 12px;max-height:150px;overflow:auto}
+  .dm-box h3{margin:0 0 6px;font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+  .dm-item{font-size:12.5px;line-height:1.5;background:var(--paper);border:1px solid var(--line);border-radius:9px;padding:8px 9px;margin-bottom:6px}
+  .dm-item code{font-weight:800;font-size:14px;background:#fff3d6;padding:1px 6px;border-radius:6px;color:#7a5b00}
+  @media (prefers-color-scheme:dark){.dm-item code{background:#3d3413;color:#ffd968}}
+  .acc-list{margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--paper)}
+  .acc-list h3{margin:0 0 4px;font-size:13px;font-family:"Bricolage Grotesque",sans-serif}
+  .acc-list .acc-sub{font-size:12px;color:var(--ink-soft);margin:0 0 8px;line-height:1.45}
+  .acc-row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line);font-size:12.5px;line-height:1.4}
+  .acc-row:last-child{border-bottom:0}
+  .acc-row.locked{opacity:.62}
+  .acc-row .st{font-weight:800;white-space:nowrap}
+  .acc-row .on{color:var(--leaf-dark)}
+  .modal-panel{position:fixed;z-index:26;left:50%;top:50%;transform:translate(-50%,-50%);width:min(440px,calc(100vw - 24px));max-height:calc(100dvh - 32px);overflow:auto;background:var(--card-bg);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px 20px}
+  .modal-panel[hidden]{display:none}
+  .modal-panel h2{font-family:"Bricolage Grotesque",sans-serif;margin:0 30px 6px 0;font-size:21px}
+  .modal-panel p{font-size:13px;line-height:1.55;color:var(--ink-soft)}
+  .modal-panel label{display:block;font-size:12.5px;font-weight:700;margin:11px 0 5px}
+  .modal-panel input[type=text],.modal-panel input[type=password]{width:100%;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);padding:10px 11px;font-size:15px}
+  .modal-panel .close{position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;border:0;background:var(--paper-dim)}
+  .editor-acc{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13px}
+  .editor-acc small{display:block;color:var(--ink-soft);font-size:11.5px;line-height:1.4;margin-top:2px}
+  .editor-acc button{flex:0 0 auto;border-radius:999px;border:1.5px solid var(--line);background:var(--paper);padding:7px 11px;font-weight:800;font-size:12px}
+  .editor-acc button.applied{background:var(--leaf);color:#fff;border-color:var(--leaf)}
+  .editor-acc button:disabled{opacity:.45;cursor:not-allowed}
+  .paint-row{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}
+  .paint-row label{margin:0}
+  .paint-row input[type=color]{width:64px;height:40px;border:1px solid var(--line);border-radius:9px;background:var(--paper);padding:3px}
+  .scrim{position:fixed;inset:0;background:rgba(10,25,20,.38);z-index:25}
+  .scrim[hidden]{display:none}
+  @media (max-width:640px){.live-panel{top:auto;bottom:calc(86px + env(safe-area-inset-bottom));max-height:32dvh}.live-panel .dm-box{max-height:84px}.controls{z-index:16}body.detail-open .live-panel{display:none}}
+
   /* ---------- toast ---------- */
   .toast{
     position:fixed;z-index:30;left:50%;top:calc(74px + env(safe-area-inset-top));
@@ -332,15 +377,23 @@ window.addEventListener('load',function(){
   </div>
 </div>
 
-<div class="proto-note">Prototype — the houses below are example residents</div>
+<div class="proto-note">Prototype — auto feed simulates real Instagram sync · houses below include example residents</div>
+
+<aside class="live-panel" id="livePanel" aria-label="Live activity feed">
+  <div class="live-head"><span><span class="live-dot" id="liveDot"></span><b>Live activity</b> <span style="font-size:11px;opacity:.85">AUTO</span></span><button type="button" id="livePauseBtn" aria-pressed="false">Pause</button></div>
+  <p class="live-sub">Completely auto in the real version: Instagram is polled every ~15 min — a comment auto-builds a house, likes &amp; follows auto-unlock accessories. No manual step. This prototype fires a simulated event every ~20 seconds.</p>
+  <ul class="live-list" id="liveList"><li><span class="when">Now</span> · Auto-sync is on. The next simulated comment, like or follow will appear here and update the town by itself.</li></ul>
+  <div class="dm-box" aria-label="Your DMs simulation"><h3>Your DMs (simulation)</h3><div id="dmList"><div class="dm-item">No new house DMs yet. When a house is auto-built, its 4-digit claim code arrives here — use it in “Edit my house”.</div></div></div>
+</aside>
 
 <section class="how" id="howPanel" hidden aria-label="How Comment Town works">
-  <h2>Every comment builds a house — 100 levels</h2>
+  <h2>Completely auto — comment, like, follow</h2>
   <ol>
-    <li><b>Comment</b> on the latest @comment.town post — your first comment builds a Level 1 Cottage.</li>
-    <li><b>Come back the next day, without skipping, and comment again: +1 level.</b> Same-day repeats do nothing. Skip a day and your streak breaks — your level is kept, but the next comment restarts your streak at 1 with no upgrade. Comment the day after that to upgrade again.</li>
-    <li><b>One house per person, forever.</b> 100 levels, 10 tiers — every level adds something visible, every 10th level is a big tier-up.</li>
-    <li><b>Find yours:</b> search your username above and the camera flies you home. Tap any house for its level, tier and streak.</li>
+    <li><b>Comment = house, automatically.</b> Comment on the latest @comment.town post and your Level 1 Cottage is auto-built on the next free plot — no form, no waiting for a person. In the real version sync polls every ~15 min; here the Live activity feed simulates it every ~20 sec.</li>
+    <li><b>Come back the next day, without skipping, and comment again: +1 level.</b> Same-day repeats do nothing. Skip a day and your streak breaks — level kept, next comment restarts the streak at 1. 100 levels, 10 tiers.</li>
+    <li><b>Like &amp; follow = accessories.</b> Likes unlock flower pots (1), paint palette (3), garden tree (5), fence pack (7), string lights (10), fountain (15) and dog house (20). Following unlocks the golden mailbox + name flag. Streaks unlock a welcome mat (3), chimney smoke (7), bench (14) and party bunting (30).</li>
+    <li><b>Edit only your own house:</b> tap your house → “Edit my house” → enter the 4-digit claim code from your DM (demo codes are shown on example houses). Apply unlocked accessories and repaint with the paint palette — the 3D house updates instantly.</li>
+    <li><b>Find yours:</b> search your username above and the camera flies you home.</li>
   </ol>
   <ul class="tiers-list" aria-label="The 10 tiers">
     <li><span>Lv 1–10</span><b>Cottage</b></li>
@@ -354,7 +407,7 @@ window.addEventListener('load',function(){
     <li><span>Lv 81–90</span><b>Landmark</b></li>
     <li><span>Lv 91–100</span><b>Legend Mansion</b></li>
   </ul>
-  <p>Houses are built in batches a few times a day. This prototype runs on a simulated town clock (top bar) so you can test tomorrow and skip-a-day without waiting — nothing is saved or posted. The 20 residents are examples spanning all 10 tiers.</p>
+  <p>Real pipeline: comment/like/follow sync every ~15 min, houses and unlocks applied automatically. This prototype runs on a simulated town clock and a simulated live feed — nothing is really saved, posted or synced. The 20 residents are examples spanning all 10 tiers.</p>
 </section>
 
 <aside class="claim closed" id="claimPanel">
@@ -377,7 +430,7 @@ window.addEventListener('load',function(){
       <label for="claimComment">Your comment for today</label>
       <textarea id="claimComment" rows="2" placeholder="Say something nice for your doorstep…" maxlength="140" required></textarea>
       <button class="btn" type="submit" style="background:var(--leaf);box-shadow:0 3px 0 var(--leaf-dark)">Comment today</button>
-      <p class="claim-note" id="claimHint">New username = Level 1 Cottage built today. Returning? The result depends on your streak — check a house card to see if you're due, already in today, or broken. Links are filtered out of the displayed comment.</p>
+      <p class="claim-note" id="claimHint">New username = Level 1 Cottage built today, and its claim code arrives in the “Your DMs (simulation)” inbox in the Live activity panel — use it to edit your house. Returning? The result depends on your streak. Links are filtered out of the displayed comment. This manual panel is just for testing — the real town builds from Instagram comments automatically.</p>
     </form>
   </div>
 </aside>
@@ -394,9 +447,42 @@ window.addEventListener('load',function(){
   <blockquote id="detailComment">“…”</blockquote>
   <div class="meta" id="detailMeta"></div>
   <div class="streak-box" id="detailStreak" aria-label="Streak and tier progress"></div>
+  <div class="acc-list" id="detailAccessories" aria-label="Accessories"></div>
   <div class="actions">
+    <button class="btn" id="detailEdit" type="button">Edit my house</button>
     <button class="btn secondary" id="detailUpgrade" type="button">Comment tomorrow → upgrade</button>
   </div>
+</section>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<section class="modal-panel" id="claimCodePanel" hidden aria-label="Claim your house to edit it">
+  <button class="close" id="claimCodeClose" aria-label="Close">✕</button>
+  <h2>Claim your house</h2>
+  <p>Only the owner can edit a house. Enter the username and the 4-digit code from the DM sent when the house was auto-built. Example residents show a demo code on their house card.</p>
+  <form id="claimCodeForm">
+    <label for="editUser">Username</label>
+    <input id="editUser" type="text" autocomplete="off" autocapitalize="none" placeholder="@yourname" required />
+    <label for="editCode">4-digit claim code</label>
+    <input id="editCode" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="••••" required />
+    <button class="btn" type="submit" style="width:100%;margin-top:14px">Unlock editor</button>
+  </form>
+</section>
+
+<section class="modal-panel" id="editorPanel" hidden aria-label="House editor">
+  <button class="close" id="editorClose" aria-label="Close editor">✕</button>
+  <h2 id="editorTitle">Edit @house</h2>
+  <p>Toggle any <b>unlocked</b> accessory — it appears on the 3D house straight away. Locked items show what unlocks them. Follower exclusives stay only while following.</p>
+  <div id="editorAccList"></div>
+  <div id="paintBox">
+    <h3 style="font-family:'Bricolage Grotesque',sans-serif;margin:16px 0 2px">Paint palette</h3>
+    <p id="paintHint" style="margin:0">Unlocks at 3 likes.</p>
+    <div class="paint-row">
+      <label>Walls<br /><input type="color" id="paintWall" value="#f6e3c5" /></label>
+      <label>Roof<br /><input type="color" id="paintRoof" value="#d9534f" /></label>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:16px"><button class="btn" id="editorSave" type="button" style="flex:1">Save &amp; view my house</button><button class="btn secondary" id="editorResetPaint" type="button">Reset paint</button></div>
 </section>
 
 <div class="controls" aria-label="Move around the town">
@@ -479,6 +565,55 @@ function nextTierName(level){
   return t>=9?null:TIERS[t+1].name;
 }
 
+/* ================= accessories & unlocks ================= */
+var ACCESSORIES=[
+ {id:'flowerPots',name:'Flower pots',icon:'🪴',source:'like',threshold:1,condition:'Like 1 post'},
+ {id:'paintPalette',name:'Paint palette',icon:'🎨',source:'like',threshold:3,condition:'Like 3 posts — repaint walls & roof'},
+ {id:'gardenTree',name:'Garden tree',icon:'🌳',source:'like',threshold:5,condition:'Like 5 posts'},
+ {id:'fencePack',name:'Fence style pack',icon:'🪵',source:'like',threshold:7,condition:'Like 7 posts'},
+ {id:'stringLights',name:'String lights',icon:'💡',source:'like',threshold:10,condition:'Like 10 posts'},
+ {id:'fountain',name:'Fountain',icon:'⛲',source:'like',threshold:15,condition:'Like 15 posts'},
+ {id:'dogHouse',name:'Dog house + dog',icon:'🐶',source:'like',threshold:20,condition:'Like 20 posts'},
+ {id:'goldMailbox',name:'Golden mailbox',icon:'📬',source:'follow',threshold:1,condition:'Follow @comment.town'},
+ {id:'nameFlag',name:'Name flag',icon:'🚩',source:'follow',threshold:1,condition:'Follow @comment.town'},
+ {id:'welcomeMat',name:'Welcome mat',icon:'👋',source:'streak',threshold:3,condition:'Reach a 3-day comment streak'},
+ {id:'chimneySmoke',name:'Chimney smoke',icon:'💨',source:'streak',threshold:7,condition:'Reach a 7-day comment streak'},
+ {id:'gardenBench',name:'Garden bench',icon:'🪑',source:'streak',threshold:14,condition:'Reach a 14-day comment streak'},
+ {id:'partyBunting',name:'Party bunting',icon:'🎉',source:'streak',threshold:30,condition:'Reach a 30-day comment streak'}
+];
+function claimCodeFor(user){ return String(1000+(hashStr('code:'+user.toLowerCase())%9000)); }
+function accUnlocked(rec,acc){
+  if(!rec)return false;
+  if(acc.source==='like')return (rec.likesGiven||0)>=acc.threshold;
+  if(acc.source==='follow')return !!rec.isFollower;
+  if(acc.source==='streak')return Math.max(rec.streak||0,rec.bestStreak||0)>=acc.threshold;
+  return false;
+}
+function accById(id){ for(var i=0;i<ACCESSORIES.length;i++)if(ACCESSORIES[i].id===id)return ACCESSORIES[i]; return null; }
+function unlockedIds(rec){ return ACCESSORIES.filter(function(a){return accUnlocked(rec,a);}).map(function(a){return a.id;}); }
+function ensureAccessories(rec){
+  if(rec.likesGiven==null)rec.likesGiven=0;
+  if(rec.isFollower==null)rec.isFollower=false;
+  if(!rec.claimCode)rec.claimCode=claimCodeFor(rec.user);
+  if(!rec.equipped)rec.equipped={};
+  ACCESSORIES.forEach(function(a){ if(accUnlocked(rec,a)&&rec.equipped[a.id]==null)rec.equipped[a.id]=true; });
+  if(rec.wallColor==null)rec.wallColor=null;
+  if(rec.roofColor==null)rec.roofColor=null;
+}
+function syncUnlocks(rec,announce){
+  var before=rec._knownUnlocked||[];
+  ensureAccessories(rec);
+  var now=unlockedIds(rec);
+  var fresh=now.filter(function(id){return before.indexOf(id)<0;});
+  rec._knownUnlocked=now;
+  fresh.forEach(function(id){ rec.equipped[id]=true; });
+  if(announce&&fresh.length){
+    fresh.forEach(function(id){ var a=accById(id); toast('Unlocked for @'+rec.user+': '+a.name+'! Open “Edit my house” to apply it.'); addFeed('@'+rec.user+' unlocked <b>'+a.name+'</b> — '+(a.source==='like'?rec.likesGiven+' likes':a.source==='follow'?'now following':'streak '+Math.max(rec.streak,rec.bestStreak)+' days')+'.'); });
+    rebuildHouse(rec);
+  }
+  return fresh;
+}
+
 /* ================= simulated town clock (prototype) =================
    Real page: a comment's calendar date. Here: Town Day 1 = Sat 7 Nov 2026,
    advanced with the Next day / Skip controls so the streak can be tested. */
@@ -518,6 +653,20 @@ function cleanText(t){
 function toast(msg){
   var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
   clearTimeout(toast._t);toast._t=setTimeout(function(){el.classList.remove('show');},3400);
+}
+function addFeed(html){
+  var list=document.getElementById('liveList'); if(!list)return;
+  var li=document.createElement('li');
+  li.innerHTML='<span class="when">Day '+townDay+' · just now</span> · '+html;
+  list.insertBefore(li,list.firstChild);
+  while(list.children.length>30)list.removeChild(list.lastChild);
+}
+function addDM(rec){
+  var box=document.getElementById('dmList'); if(!box||!rec)return;
+  if(box.dataset.empty==null){ box.innerHTML=''; box.dataset.empty='1'; }
+  var d=document.createElement('div'); d.className='dm-item';
+  d.innerHTML='💬 <b>@comment.town</b> → @'+rec.user+'<br />Your house is live on '+rec.street+'! Claim code: <code>'+rec.claimCode+'</code><br /><span style="color:var(--ink-soft)">Use it in “Edit my house” on the town site. Keep it private — anyone with it can edit your house.</span>';
+  box.insertBefore(d,box.firstChild);
 }
 
 /* ================= three setup ================= */
@@ -678,8 +827,12 @@ function buildHouseMesh(rec){
   var rand=rng(h+rec.level*7919);
   var tier=tierOf(rec.level), lit=levelInTier(rec.level);
   var tierDef=TIERS[tier];
+  ensureAccessories(rec);
   var wall=(tierDef.wall!==null?tierDef.wall:WALLS[h%WALLS.length]);
   var roofC=(tierDef.roof!==null?tierDef.roof:ROOFS[(h>>4)%ROOFS.length]);
+  if(rec.wallColor!=null)wall=rec.wallColor;
+  if(rec.roofColor!=null)roofC=rec.roofColor;
+  rec._wallHex=wall; rec._roofHex=roofC;
   var roofType=tier>=7?1:(tier>=3?((h>>7)%2):(h>>7)%3); /* high tiers: gabled grandeur */
   var g=new THREE.Group();
   var wallMat=new THREE.MeshLambertMaterial({color:wall});
@@ -845,6 +998,26 @@ function buildHouseMesh(rec){
     }
   }
 
+  /* ---- equipped accessories (unlocked in the editor) ---- */
+  (function addAcc(){
+    var eq=rec.equipped||{};
+    function on(id){ return !!eq[id]&&accUnlocked(rec,accById(id)); }
+    function box(w,h,d,c,x,y,z){ var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshLambertMaterial({color:c})); m.position.set(x,y,z); m.castShadow=true; g.add(m); return m; }
+    function sph(r,c,x,y,z){ var m=new THREE.Mesh(new THREE.SphereGeometry(r,8,7),new THREE.MeshLambertMaterial({color:c})); m.position.set(x,y,z); m.castShadow=true; g.add(m); return m; }
+    if(on('flowerPots')){ [-1.05,1.05].forEach(function(px){ box(0.5,0.42,0.5,0xc96a3a,px,0.42,D/2+0.55); sph(0.28,0xff6b9d,px,0.78,D/2+0.55); }); }
+    if(on('welcomeMat')){ box(1.5,0.07,0.8,0xd9534f,0,0.3,D/2+0.95); }
+    if(on('gardenTree')){ var tr=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.22,1.1,6),new THREE.MeshLambertMaterial({color:0x8a5a33})); tr.position.set(4.2,0.75,-3.4); g.add(tr); var tp=new THREE.Mesh(new THREE.ConeGeometry(1.3,2.7,7),new THREE.MeshLambertMaterial({color:0x2e9e5b,flatShading:true})); tp.position.set(4.2,2.6,-3.4); tp.castShadow=true; g.add(tp); }
+    if(on('fencePack')){ for(var fx2=-4.6;fx2<=4.6;fx2+=1.15){ if(Math.abs(fx2)<1.2)continue; box(0.18,1.05,0.18,0x6b4a2f,fx2,0.72,4.9); } box(10,0.14,0.1,0x6b4a2f,0,1.05,4.9); box(10,0.14,0.1,0x6b4a2f,0,0.55,4.9); }
+    if(on('stringLights')){ var pts2=[]; for(var s2=0;s2<=10;s2++){ pts2.push(new THREE.Vector3(-4.4+s2*0.88,2.95-Math.sin(s2/10*Math.PI)*0.45,D/2+0.35)); } g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts2),new THREE.LineBasicMaterial({color:0x8a6d1f}))); pts2.forEach(function(p,i){ if(i%2)return; var b=new THREE.Mesh(new THREE.SphereGeometry(0.13,6,6),new THREE.MeshBasicMaterial({color:i%4?0xffe9a8:0xff8a5c})); b.position.copy(p); b.position.y-=0.16; g.add(b); }); }
+    if(on('fountain')){ var fb=new THREE.Mesh(new THREE.CylinderGeometry(1.05,1.2,0.55,12),new THREE.MeshLambertMaterial({color:0xb9c4c9})); fb.position.set(-3.9,0.48,3.2); fb.castShadow=true; g.add(fb); var fw=new THREE.Mesh(new THREE.CylinderGeometry(0.85,0.85,0.12,12),new THREE.MeshPhongMaterial({color:0x4db6e2,shininess:90})); fw.position.set(-3.9,0.78,3.2); g.add(fw); var fs=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.2,0.8,8),new THREE.MeshLambertMaterial({color:0xb9c4c9})); fs.position.set(-3.9,1.05,3.2); g.add(fs); }
+    if(on('dogHouse')){ box(1.15,0.95,1.05,0xb85c48,-4.1,0.68,-0.6); var dr=new THREE.Mesh(new THREE.ConeGeometry(0.95,0.55,4),new THREE.MeshLambertMaterial({color:0x5a4a42,flatShading:true})); dr.rotation.y=Math.PI/4; dr.position.set(-4.1,1.42,-0.6); g.add(dr); box(0.55,0.5,0.7,0xf3ead8,-4.1,0.55,0.35); sph(0.26,0xf3ead8,-4.1,0.92,0.42); }
+    if(on('goldMailbox')){ box(0.14,0.95,0.14,0x8a6d1f,-2.7,0.68,4.6); var gm=box(0.9,0.48,0.52,0xd4a017,-2.7,1.32,4.6); gm.material=new THREE.MeshLambertMaterial({color:0xd4a017,emissive:0x554400}); }
+    if(on('nameFlag')){ var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.07,3.1,6),new THREE.MeshLambertMaterial({color:0x333a40})); pole.position.set(4.7,1.75,4.4); g.add(pole); var flag=new THREE.Mesh(new THREE.BoxGeometry(1.35,0.75,0.06),new THREE.MeshLambertMaterial({color:roofC})); flag.position.set(5.42,3.0,4.4); g.add(flag); }
+    if(on('chimneySmoke')){ [0,1,2].forEach(function(si){ var sm=new THREE.Mesh(new THREE.SphereGeometry(0.32+si*0.14,8,7),new THREE.MeshLambertMaterial({color:0xffffff,transparent:true,opacity:0.55-si*0.12})); sm.position.set(W/2-1+(si*0.18),bodyH+2.8+si*0.55,-D/2+1.2); sm.name='smokePuff'; g.add(sm); }); }
+    if(on('gardenBench')){ box(1.7,0.12,0.5,0x8a5a33,3.1,0.62,3.6); box(1.7,0.55,0.1,0x8a5a33,3.1,0.95,3.82); box(0.12,0.42,0.45,0x5a3a22,2.4,0.4,3.6); box(0.12,0.42,0.45,0x5a3a22,3.8,0.4,3.6); }
+    if(on('partyBunting')){ var bp=[]; for(var bi=0;bi<=12;bi++){ bp.push(new THREE.Vector3(-4.8+bi*0.8,4.15-Math.sin(bi/12*Math.PI)*0.6,4.95)); } g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(bp),new THREE.LineBasicMaterial({color:0x333a40}))); var bcols=[0xff6b4a,0xffc53d,0x2e9e5b,0x3f7cac]; bp.forEach(function(p,i){ if(i%2||i===0||i===12)return; var tri=new THREE.Mesh(new THREE.ConeGeometry(0.22,0.42,3),new THREE.MeshLambertMaterial({color:bcols[i%4],flatShading:true})); tri.rotation.x=Math.PI; tri.position.set(p.x,p.y-0.22,p.z); g.add(tri); }); }
+  })();
+
   var sign=nameSprite(rec.user,roofC);
   sign.position.y=roofTopY+1.55;
   g.add(sign);
@@ -871,11 +1044,19 @@ function addHouse(user,comment,level,silent,seedStreak,seedLastDay){
   var p=plotPos(idx);
   while(Math.abs(p.x)<9&&Math.abs(p.z)<9){ idx=nextPlot++; p=plotPos(idx); if(nextPlot>TOTAL_PLOTS)break; }
   var lv=Math.max(1,Math.min(MAX_LEVEL,level||1));
+  var _h=hashStr(user);
   var rec={user:user,comment:cleanText(comment),level:lv,pos:p,plot:idx,
            street:STREETS[hashStr(user)%STREETS.length],plotNo:idx+1,
            streak:(seedStreak!=null?seedStreak:1),bestStreak:(seedStreak!=null?seedStreak:1),
-           lastCommentDay:(seedLastDay!=null?seedLastDay:townDay),totalComments:Math.max(1,lv),isExample:!!silent};
+           lastCommentDay:(seedLastDay!=null?seedLastDay:townDay),totalComments:Math.max(1,lv),isExample:!!silent,
+           likesGiven: silent?Math.min(24,Math.floor(lv/4)+(_h%9)):0,
+           isFollower: silent?(_h%3!==0):false,
+           claimCode:claimCodeFor(user),equipped:{},wallColor:null,roofColor:null};
+  ensureAccessories(rec);
+  ACCESSORIES.forEach(function(a){ if(accUnlocked(rec,a))rec.equipped[a.id]=true; });
+  rec._knownUnlocked=unlockedIds(rec);
   rec.group=buildHouseMesh(rec);
+  if(!silent)addDM(rec);
   houses.push(rec);byUser[user]=rec;
   rec.group.traverse(function(o){if(o.isMesh)pickMeshes.push(o);});
   updateCount();
@@ -900,10 +1081,11 @@ function processComment(user,comment){
     ex.streak++; ex.bestStreak=Math.max(ex.bestStreak,ex.streak);
     ex.lastCommentDay=townDay; ex.totalComments++;
     ex.comment=cleanText(comment)||ex.comment;
-    if(ex.level>=MAX_LEVEL){ rebuildHouse(ex); return {rec:ex,outcome:"maxed"}; }
+    if(ex.level>=MAX_LEVEL){ syncUnlocks(ex,true); rebuildHouse(ex); return {rec:ex,outcome:"maxed"}; }
     var oldTier=tierOf(ex.level);
     ex.level++;
     rebuildHouse(ex);
+    syncUnlocks(ex,true);
     return {rec:ex,outcome:(tierOf(ex.level)>oldTier)?"tier-up":"upgraded",prevTier:oldTier};
   }
   /* gap > 1 (or clock moved backwards in a test) — streak breaks, level kept */
@@ -1010,13 +1192,28 @@ function selectHouse(rec,fly){
   var meta=document.getElementById('detailMeta');meta.innerHTML="";
   var lv=document.createElement('span');lv.className='tag hot';lv.textContent='Level '+rec.level+'/100 · '+tierName(rec.level);meta.appendChild(lv);
   var sk=document.createElement('span');sk.className='tag';sk.textContent=rec.streak+'-day streak';meta.appendChild(sk);
+  var lk=document.createElement('span');lk.className='tag';lk.textContent='♥ '+(rec.likesGiven||0)+' likes given';meta.appendChild(lk);
+  var fw=document.createElement('span');fw.className='tag';fw.textContent=rec.isFollower?'✓ Follower':'Not following yet';meta.appendChild(fw);
+  if(rec.isExample){ var dc=document.createElement('span');dc.className='tag hot';dc.textContent='Demo claim code: '+rec.claimCode;meta.appendChild(dc); }
   levelFeatures(rec.level).slice(-3).forEach(function(f){
     var s=document.createElement('span');s.className='tag';s.textContent=f;meta.appendChild(s);
   });
   detail.hidden=false;
   document.body.classList.add('detail-open');
   renderStreak(rec);
+  renderAccessories(rec);
   if(fly)flyTo(rec);
+}
+function renderAccessories(rec){
+  var box=document.getElementById('detailAccessories'); if(!box)return;
+  ensureAccessories(rec);
+  var rows=ACCESSORIES.map(function(a){
+    var un=accUnlocked(rec,a), eq=un&&!!rec.equipped[a.id];
+    var status=un?(eq?'✓ Applied':'Unlocked — not applied'):'🔒 Locked';
+    var detailTxt=un?(eq?'On your house now':'Open the editor to apply it'):a.condition+(a.source==='like'?' — '+(rec.likesGiven||0)+' so far':a.source==='streak'?' — best streak '+Math.max(rec.streak||0,rec.bestStreak||0):'');
+    return '<div class="acc-row'+(un?'':' locked')+'"><span>'+a.icon+' <b>'+a.name+'</b><br /><span style="color:var(--ink-soft)">'+detailTxt+'</span></span><span class="st '+(un?'on':'')+'">'+status+'</span></div>';
+  }).join('');
+  box.innerHTML='<h3>Accessories — unlocked by commenting, liking &amp; following</h3><p class="acc-sub">♥ '+(rec.likesGiven||0)+' likes · '+(rec.isFollower?'Following ✓ (follower exclusives active)':'Not following — follow to unlock the golden mailbox + name flag')+' · Best streak '+Math.max(rec.streak||0,rec.bestStreak||0)+' days</p>'+rows;
 }
 document.getElementById('detailClose').addEventListener('click',function(){
   detail.hidden=true;selected=null;ring.visible=false;
@@ -1035,6 +1232,165 @@ document.getElementById('detailUpgrade').addEventListener('click',function(){
   else if(res.outcome==="broken")toast('Streak broken — @'+rec.user+' restarts at a 1-day streak. Level '+rec.level+' kept, no upgrade today.');
   else if(res.outcome==="maxed")toast('@'+rec.user+' is already MAX LEVEL 100.');
   else toast('That comment did not upgrade @'+rec.user+'.');
+});
+
+/* ================= claim + editor ================= */
+var editingRec=null;
+var scrim=document.getElementById('scrim');
+var claimPanel2=document.getElementById('claimCodePanel');
+var editorPanel=document.getElementById('editorPanel');
+function showModal(which){
+  scrim.hidden=!which; claimPanel2.hidden=which!=='claim'; editorPanel.hidden=which!=='editor';
+}
+document.getElementById('detailEdit').addEventListener('click',function(){
+  if(!selected)return;
+  document.getElementById('editUser').value='@'+selected.user;
+  document.getElementById('editCode').value='';
+  showModal('claim');
+  setTimeout(function(){document.getElementById('editCode').focus();},50);
+});
+document.getElementById('claimCodeClose').addEventListener('click',function(){showModal(null);});
+document.getElementById('editorClose').addEventListener('click',function(){showModal(null);});
+scrim.addEventListener('click',function(){showModal(null);});
+document.getElementById('claimCodeForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  var u=normaliseUser(document.getElementById('editUser').value);
+  var code=document.getElementById('editCode').value.trim();
+  var rec=byUser[u];
+  if(!rec){ toast('No house for @'+u+' yet — comment first and one is auto-built for you.'); return; }
+  if(code!==rec.claimCode){ toast('Wrong claim code for @'+u+' — that house can only be edited by its owner. Check the DM for the right code.'); return; }
+  editingRec=rec;
+  openEditor(rec);
+});
+function openEditor(rec){
+  showModal('editor');
+  document.getElementById('editorTitle').textContent='Edit @'+rec.user;
+  renderEditor(rec);
+}
+function renderEditor(rec){
+  ensureAccessories(rec);
+  var list=document.getElementById('editorAccList'); list.innerHTML='';
+  ACCESSORIES.forEach(function(a){
+    if(a.id==='paintPalette')return; /* handled in paint box */
+    var un=accUnlocked(rec,a), eq=un&&!!rec.equipped[a.id];
+    var row=document.createElement('div'); row.className='editor-acc';
+    row.innerHTML='<span>'+a.icon+' <b>'+a.name+'</b><small>'+(un?(eq?'Applied to your house':'Unlocked — not applied'):('🔒 '+a.condition))+'</small></span>';
+    var btn=document.createElement('button'); btn.type='button';
+    btn.textContent=un?(eq?'Remove':'Apply'):'Locked';
+    btn.disabled=!un; if(eq)btn.className='applied';
+    btn.addEventListener('click',function(){
+      rec.equipped[a.id]=!rec.equipped[a.id];
+      rebuildHouse(rec); renderEditor(rec); if(selected===rec){selectHouse(rec,false);}
+      toast(rec.equipped[a.id]?a.name+' applied to @'+rec.user+'’s house.':a.name+' removed.');
+    });
+    row.appendChild(btn); list.appendChild(row);
+  });
+  var paintUn=accUnlocked(rec,accById('paintPalette'));
+  var pw=document.getElementById('paintWall'), pr=document.getElementById('paintRoof');
+  pw.disabled=!paintUn; pr.disabled=!paintUn;
+  function hex(n){ return '#'+new THREE.Color(n).getHexString(); }
+  pw.value=hex(rec.wallColor!=null?rec.wallColor:(rec._wallHex!=null?rec._wallHex:0xf6e3c5));
+  pr.value=hex(rec.roofColor!=null?rec.roofColor:(rec._roofHex!=null?rec._roofHex:0xd9534f));
+  document.getElementById('paintHint').textContent=paintUn?'Paint palette unlocked — pick colours and they apply live. Save keeps them.':'🔒 Paint palette — like 3 posts to unlock repainting ('+(rec.likesGiven||0)+' likes so far).';
+  pw.oninput=function(){ rec.wallColor=parseInt(pw.value.slice(1),16); rebuildHouse(rec); };
+  pr.oninput=function(){ rec.roofColor=parseInt(pr.value.slice(1),16); rebuildHouse(rec); };
+}
+document.getElementById('editorResetPaint').addEventListener('click',function(){
+  if(!editingRec)return; editingRec.wallColor=null; editingRec.roofColor=null; rebuildHouse(editingRec); renderEditor(editingRec); toast('Paint reset to the tier colours for @'+editingRec.user+'.');
+});
+document.getElementById('editorSave').addEventListener('click',function(){
+  if(!editingRec)return; showModal(null); selectHouse(editingRec,true); toast('Saved! @'+editingRec.user+'’s house is updated in the town.');
+});
+
+/* ================= live auto feed (simulation) ================= */
+var LIVE_NEW=[
+ ['zoya.clicks','just found this town, house me pls'],['hamza.gif','commenting from Karachi, claim my plot'],['ruby.runs','day one! excited for my cottage'],['kenji.jpg','a quiet house near the fountain please'],['tessa.talks','i never miss a day, watch me'],['bilal.bakes','put me by the bakery street'],['nina.notes','study break = comment break'],['gus.grows','here for the garden era'],['sana.snaps','first comment, first house??'],['leo.log','logging my day 1 here'],['faye.films','filming my house reveal soon'],['adam.arts','paint palette grind starts now'],['hira.hikes','a house with a view please'],['cole.codes','automated house? say less'],['dina.draws','sketching my future mansion'],['rafi.rides','park my house near the road pls']
+];
+var LIVE_COMMENTS=['back again — no skip, upgrade me','day streak keeps growing','commenting before midnight counts right?','another day, another level','house check-in, lets gooo'];
+var liveIdx=0, livePaused=false, liveTimer=null;
+function giveLike(rec){
+  var before=unlockedIds(rec);
+  rec.likesGiven=(rec.likesGiven||0)+1;
+  var fresh=syncUnlocks(rec,false);
+  var newFresh=fresh.filter(function(id){return before.indexOf(id)<0;});
+  /* syncUnlocks already updated known list; compute toast here */
+  if(newFresh.length||fresh.length){
+    var ids=fresh.length?fresh:newFresh;
+    ids.forEach(function(id){ rec.equipped[id]=true; });
+    rebuildHouse(rec);
+    var names=ids.map(function(id){return accById(id).name;}).join(', ');
+    toast('♥ @'+rec.user+' liked a post ('+rec.likesGiven+' total) — unlocked: '+names+'!');
+    addFeed('♥ <b>@'+rec.user+'</b> liked a post ('+rec.likesGiven+' total) → unlocked <b>'+names+'</b>.');
+  }else{
+    addFeed('♥ <b>@'+rec.user+'</b> liked a post ('+rec.likesGiven+' total). Next unlock: '+nextLikeHint(rec)+'.');
+  }
+  if(selected===rec)selectHouse(rec,false);
+}
+function nextLikeHint(rec){
+  var nxt=ACCESSORIES.filter(function(a){return a.source==='like'&&!accUnlocked(rec,a);})[0];
+  return nxt?(nxt.name+' at '+nxt.threshold+' likes'):'all like accessories unlocked';
+}
+function liveEvent(){
+  if(livePaused)return;
+  liveIdx++;
+  var kind=liveIdx%4; /* rotate: new, existing comment, like, follow */
+  try{
+    if(kind===1){
+      var cand=LIVE_NEW.filter(function(e){return !byUser[normaliseUser(e[0])];});
+      if(cand.length){
+        var pick=cand[Math.floor(Math.random()*cand.length)];
+        var res=processComment(pick[0],pick[1]);
+        if(res.rec){
+          addFeed('💬 <b>@'+res.rec.user+'</b> commented “'+res.rec.comment+'” → house <b>auto-built</b> on '+res.rec.street+'. Claim code sent by DM.');
+          toast('@'+res.rec.user+' commented → house auto-built on '+res.rec.street+'!');
+          selectHouse(res.rec,true);
+          return;
+        }
+      }
+      kind=2; /* town full of the pool — fall through to an existing comment */
+    }
+    if(kind===2){
+      var due=houses.filter(function(r){return r.level<MAX_LEVEL;});
+      if(due.length){
+        var rec2=due[Math.floor(Math.random()*due.length)];
+        if(streakGap(rec2)===0){ townDay++; updateTownClock(); addFeed('🌙 Town moved to <b>Day '+townDay+'</b> — a new comment day begins.'); }
+        var res2=processComment(rec2.user,LIVE_COMMENTS[Math.floor(Math.random()*LIVE_COMMENTS.length)]);
+        if(res2.outcome==='upgraded'||res2.outcome==='tier-up')addFeed('💬 <b>@'+rec2.user+'</b> commented on the next day → streak '+rec2.streak+', <b>Level '+rec2.level+'</b> ('+tierName(rec2.level)+') — auto-upgraded.');
+        else if(res2.outcome==='broken')addFeed('💬 <b>@'+rec2.user+'</b> commented after a skip → streak restarted at 1, Level '+rec2.level+' kept.');
+        else if(res2.outcome==='maxed')addFeed('💬 <b>@'+rec2.user+'</b> commented → already MAX LEVEL 100, streak '+rec2.streak+'.');
+        else addFeed('💬 <b>@'+rec2.user+'</b> commented.');
+        if(selected===rec2)selectHouse(rec2,false);
+        return;
+      }
+    }
+    if(kind===3){
+      if(houses.length){ giveLike(houses[Math.floor(Math.random()*houses.length)]); return; }
+    }
+    /* follow */
+    var nonFollowers=houses.filter(function(r){return !r.isFollower;});
+    if(nonFollowers.length){
+      var rec3=nonFollowers[Math.floor(Math.random()*nonFollowers.length)];
+      rec3.isFollower=true;
+      var fresh3=syncUnlocks(rec3,false);
+      fresh3.forEach(function(id){rec3.equipped[id]=true;});
+      rebuildHouse(rec3);
+      addFeed('➕ <b>@'+rec3.user+'</b> followed @comment.town → unlocked <b>Golden mailbox + Name flag</b> (follower exclusives).');
+      toast('@'+rec3.user+' followed → Golden mailbox + Name flag unlocked!');
+      if(selected===rec3)selectHouse(rec3,false);
+      return;
+    }
+    if(houses.length)giveLike(houses[Math.floor(Math.random()*houses.length)]);
+  }catch(err){ /* a bad simulated event must never kill the town */ }
+}
+liveTimer=setInterval(liveEvent,20000);
+document.getElementById('livePauseBtn').addEventListener('click',function(){
+  livePaused=!livePaused;
+  this.textContent=livePaused?'Resume':'Pause';
+  this.setAttribute('aria-pressed',livePaused?'true':'false');
+  document.getElementById('liveDot').classList.toggle('paused',livePaused);
+  toast(livePaused?'Auto feed paused — no new simulated events.':'Auto feed resumed — events every ~20 seconds.');
+  if(!livePaused)addFeed('▶ Auto-sync resumed.');
+  else addFeed('❚❚ Auto-sync paused by you.');
 });
 
 /* ================= picking ================= */
@@ -1091,7 +1447,7 @@ document.getElementById('claimForm').addEventListener('submit',function(e){
   refreshDatalist();
   selectHouse(rec,true);
   setClaim(false);
-  if(res.outcome==="built")toast('Welcome to town, @'+rec.user+'! Level 1 Cottage built on '+rec.street+'. Comment tomorrow — no skipping — for Level 2.');
+  if(res.outcome==="built"){toast('Welcome to town, @'+rec.user+'! Level 1 Cottage built on '+rec.street+'. Claim code sent to your DMs (see Live panel).');addFeed('💬 <b>@'+rec.user+'</b> commented → house <b>auto-built</b> on '+rec.street+' (manual test panel). Claim code sent by DM.');}
   else if(res.outcome==="upgraded")toast('Streak day '+rec.streak+'! @'+rec.user+' → Level '+rec.level+'/100 ('+tierName(rec.level)+').');
   else if(res.outcome==="tier-up")toast('TIER UP! @'+rec.user+' → Level '+rec.level+'/100 — now a '+tierName(rec.level)+'!');
   else if(res.outcome==="same-day")toast('@'+rec.user+' already commented today (Day '+townDay+'). No upgrade — use Next day, then comment again.');
