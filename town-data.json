@@ -12,17 +12,20 @@
    "best_streak": 1,
    "claim_code_hash": "3b5e679e0bff00e08e55e9d9f8165e6ef47053e9c73062390dceefaeff69ec8c",
    "display_comment": "house",
-   "following": false,
+   "following": true,
    "joined_date": "2026-11-07",
    "last_comment_date": "2026-11-07",
    "level": 1,
    "likes": 0,
    "streak": 1,
    "tier": "Cottage",
-   "unlocks": [],
+   "unlocks": [
+    "golden_mailbox",
+    "name_flag"
+   ],
    "username": "flashquizapp"
   }
  ],
- "updated_at": "2026-11-07T23:33:45.135761+05:00",
+ "updated_at": "2026-11-07T23:48:58.052771+05:00",
  "version": 1
 }
