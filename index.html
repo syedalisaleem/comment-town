@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="color-scheme" content="light dark" />
 <link rel="icon" href="data:," />
-<title>Comment Town — 3D Prototype</title>
+<title>Comment Town — Every Comment Builds a House</title>
 <script>
 /* Fonts load after first paint so a slow font CDN can never stall the town. */
 window.addEventListener('load',function(){
@@ -339,13 +339,18 @@ window.addEventListener('load',function(){
     font-size:13px;line-height:1.5;display:none;white-space:pre-wrap;
   }
 
-  .proto-note{
-    position:fixed;z-index:16;left:50%;transform:translateX(-50%);
-    top:calc(64px + env(safe-area-inset-top));
-    font-size:11.5px;font-weight:600;color:#fff;
-    background:rgba(15,35,28,.5);padding:5px 11px;border-radius:999px;
-    backdrop-filter:blur(3px);white-space:nowrap;pointer-events:none;
+  /* ---------- empty town welcome ---------- */
+  .empty-panel{
+    position:fixed;z-index:15;left:50%;top:104px;transform:translateX(-50%);
+    width:min(430px,calc(100vw - 24px));
+    background:var(--card-bg);border:1px solid var(--line);border-radius:18px;
+    box-shadow:var(--shadow);padding:22px 24px;text-align:center;
   }
+  .empty-panel[hidden]{display:none}
+  .empty-panel h2{font-family:"Bricolage Grotesque",sans-serif;font-size:23px;margin:0 0 8px}
+  .empty-panel p{font-size:14.5px;line-height:1.55;color:var(--ink-soft);margin:0 0 14px}
+  .empty-panel .empty-note{font-size:13px;font-weight:600;color:var(--ink)}
+  .empty-panel .btn{display:inline-block;text-decoration:none;padding:13px 20px}
 
   /* ================= mobile (≤768px) — primary experience ================= */
   @media (max-width:768px){
@@ -359,7 +364,7 @@ window.addEventListener('load',function(){
     .search-card .btn{min-height:44px;padding:10px 14px}
     .stats{align-items:stretch}
     .stats .how-chip{display:none}
-    .stats .day-chip{display:none}
+    .stats .updated-chip{display:none}
     .stats .chip{padding:8px 11px;font-size:12px;min-height:44px}
     .proto-note{display:none}
     .btn{min-height:44px}
@@ -479,29 +484,33 @@ window.addEventListener('load',function(){
     <button class="btn" type="submit">Find</button>
   </form>
   <div class="stats">
-    <div class="chip day-chip" aria-live="polite" title="Simulated town date — advances with the Next day controls">Town&nbsp;<span class="num" id="townDayLabel">Day 1</span></div>
     <div class="chip" aria-live="polite"><span class="dot"></span><span class="num" id="houseCount">0</span>&nbsp;houses built</div>
+    <div class="chip updated-chip" id="updatedChip">Town data updated —</div>
     <div class="chip how-chip"><button type="button" id="howToggle" aria-expanded="false" aria-controls="howPanel">How it works</button></div>
   </div>
 </div>
 
-<div class="proto-note">Prototype — auto feed simulates real Instagram sync · houses below include example residents</div>
+<section class="empty-panel" id="emptyPanel" hidden aria-label="Welcome to Comment Town">
+  <h2>The town is empty.</h2>
+  <p>Comment on the latest @housepercomment post on Instagram and your house gets built here.</p>
+  <p class="empty-note" id="emptyNote" hidden>Town data is on its way — check back in a few minutes.</p>
+  <a class="btn" href="https://www.instagram.com/housepercomment" target="_blank" rel="noopener">Open @housepercomment on Instagram</a>
+</section>
 
-<aside class="live-panel" id="livePanel" aria-label="Live activity feed">
-  <div class="live-head"><span><span class="live-dot" id="liveDot"></span><b>Live activity</b> <span style="font-size:11px;opacity:.85">AUTO</span></span><span style="display:flex;gap:6px;align-items:center"><button type="button" id="livePauseBtn" aria-pressed="false">Pause</button><button type="button" class="live-close" id="liveClose" aria-label="Close activity panel">✕</button></span></div>
-  <p class="live-sub">Completely auto in the real version: Instagram is polled every ~15 min — a comment auto-builds a house, likes &amp; follows auto-unlock accessories. No manual step. This prototype fires a simulated event every ~20 seconds.</p>
-  <ul class="live-list" id="liveList"><li><span class="when">Now</span> · Auto-sync is on. The next simulated comment, like or follow will appear here and update the town by itself.</li></ul>
-  <div class="dm-box" id="dmBox" aria-label="Your DMs simulation"><h3>Your DMs (simulation)</h3><div id="dmList"><div class="dm-item">No new house DMs yet. When a house is auto-built, its 4-digit claim code arrives here — use it in “Edit my house”.</div></div></div>
+<aside class="live-panel" id="livePanel" aria-label="Town activity">
+  <div class="live-head"><span><b>Town activity</b></span><span style="display:flex;gap:6px;align-items:center"><button type="button" class="live-close" id="liveClose" aria-label="Close activity panel">✕</button></span></div>
+  <p class="live-sub" id="activitySub">New houses and upgrades from @housepercomment on Instagram, added in batches about every 15 minutes.</p>
+  <ul class="live-list" id="liveList"><li>Loading the town…</li></ul>
 </aside>
 
 <section class="how" id="howPanel" hidden aria-label="How Comment Town works">
   <span class="sheet-grab" aria-hidden="true"></span>
-  <h2>Completely auto — comment, like, follow</h2>
+  <h2>How Comment Town works</h2>
   <ol>
-    <li><b>Comment = house, automatically.</b> Comment on the latest @comment.town post and your Level 1 Cottage is auto-built on the next free plot — no form, no waiting for a person. In the real version sync polls every ~15 min; here the Live activity feed simulates it every ~20 sec.</li>
-    <li><b>Come back the next day, without skipping, and comment again: +1 level.</b> Same-day repeats do nothing. Skip a day and your streak breaks — level kept, next comment restarts the streak at 1. 100 levels, 10 tiers.</li>
-    <li><b>Like &amp; follow = accessories.</b> Likes unlock flower pots (1), paint palette (3), garden tree (5), fence pack (7), string lights (10), fountain (15) and dog house (20). Following unlocks the golden mailbox + name flag. Streaks unlock a welcome mat (3), chimney smoke (7), bench (14) and party bunting (30).</li>
-    <li><b>Edit only your own house:</b> tap your house → “Edit my house” → enter the 4-digit claim code from your DM (demo codes are shown on example houses). Apply unlocked accessories and repaint with the paint palette — the 3D house updates instantly.</li>
+    <li><b>Comment = house.</b> Comment on the latest @housepercomment post on Instagram and your Level 1 Cottage gets built here on the next free plot — houses are added in batches, within about 15 minutes.</li>
+    <li><b>Comment again the next day to level up.</b> A comment on the next consecutive day adds +1 level and grows your streak. Same-day repeats do nothing. Skip a day and your streak restarts — your level is kept. 100 levels, 10 tiers, all the way to the Legend Mansion.</li>
+    <li><b>Like &amp; follow = decorations.</b> Likes unlock flower pots (1), the paint palette (3), a garden tree (5), the fence pack (7), string lights (10), a fountain (15) and a dog house (20). Following the page unlocks the golden mailbox + name flag. Streaks unlock a welcome mat (3 days), chimney smoke (7), a garden bench (14) and party bunting (30).</li>
+    <li><b>Edit only your own house:</b> tap your house → “Edit my house” → enter the 4-digit claim code that was DM'd to you by @housepercomment. Place your unlocked decorations and repaint with the paint palette.</li>
     <li><b>Find yours:</b> search your username above and the camera flies you home.</li>
   </ol>
   <ul class="tiers-list" aria-label="The 10 tiers">
@@ -516,7 +525,6 @@ window.addEventListener('load',function(){
     <li><span>Lv 81–90</span><b>Landmark</b></li>
     <li><span>Lv 91–100</span><b>Legend Mansion</b></li>
   </ul>
-  <p>Real pipeline: comment/like/follow sync every ~15 min, houses and unlocks applied automatically. This prototype runs on a simulated town clock and a simulated live feed — nothing is really saved, posted or synced. The 20 residents are examples spanning all 10 tiers.</p>
   <div class="quality-box">
     <b>Graphics quality</b>
     <p>Auto picks the smooth setting for your device — High on desktop, balanced on phones. Low turns shadows off for the smoothest frame rate on older phones.</p>
@@ -530,26 +538,18 @@ window.addEventListener('load',function(){
 
 <aside class="claim closed" id="claimPanel">
   <button class="claim-head" id="claimToggle" aria-expanded="false" aria-controls="claimBody">
-    <span><span class="t">Get your house</span><br /><span class="s">Try the comment → house loop</span></span>
+    <span><span class="t">My house</span><br /><span class="s">Edit your house with your claim code</span></span>
     <span class="chev" aria-hidden="true">▾</span>
   </button>
   <div class="claim-body" id="claimBody">
-    <div id="claimDmSlot"></div>
-    <div class="day-controls" aria-label="Simulated town clock">
-      <div class="dc-head"><b id="dcDayLabel">Town Day 1</b><span class="dc-date" id="dcDateLabel">Sat 7 Nov 2026</span></div>
-      <p><b>Streak rule:</b> comment on the <b>next day</b> (no skip) = <b>+1 level</b>, up to 100. Same day again = nothing. Skip a day = streak breaks, level kept, no upgrade on the return comment.</p>
-      <div class="dc-btns">
-        <button type="button" class="primary" id="nextDayBtn">→ Next day<small>Consecutive — streak lives</small></button>
-        <button type="button" id="skipDayBtn">Skip a day →<small>Jump +2 days — streaks break</small></button>
-      </div>
-    </div>
-    <form id="claimForm">
-      <label for="claimUser">Your username</label>
-      <input id="claimUser" type="text" placeholder="@yourname" autocomplete="off" autocapitalize="none" maxlength="30" required />
-      <label for="claimComment">Your comment for today</label>
-      <textarea id="claimComment" rows="2" placeholder="Say something nice for your doorstep…" maxlength="140" required></textarea>
-      <button class="btn" type="submit" style="background:var(--leaf);box-shadow:0 3px 0 var(--leaf-dark)">Comment today</button>
-      <p class="claim-note" id="claimHint">New username = Level 1 Cottage built today, and its claim code arrives in the “Your DMs (simulation)” inbox in the Live activity panel — use it to edit your house. Returning? The result depends on your streak. Links are filtered out of the displayed comment. This manual panel is just for testing — the real town builds from Instagram comments automatically.</p>
+    <p class="claim-note" style="margin:0">Your claim code was DM'd to you by @housepercomment when your house was built. No code? DM the page and it will reply with it.</p>
+    <form id="myHouseForm">
+      <label for="myHouseUser">Your username</label>
+      <input id="myHouseUser" type="text" placeholder="@yourname" autocomplete="off" autocapitalize="none" maxlength="30" required />
+      <label for="myHouseCode">4-digit claim code</label>
+      <input id="myHouseCode" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="••••" required />
+      <button class="btn" type="submit" style="background:var(--leaf);box-shadow:0 3px 0 var(--leaf-dark)">Unlock editor</button>
+      <p class="claim-note" id="myHouseError" role="alert" style="color:#b3261e;font-weight:700" hidden></p>
     </form>
   </div>
 </aside>
@@ -569,7 +569,7 @@ window.addEventListener('load',function(){
   <div class="acc-list" id="detailAccessories" aria-label="Accessories"></div>
   <div class="actions">
     <button class="btn" id="detailEdit" type="button">Edit my house</button>
-    <button class="btn secondary" id="detailUpgrade" type="button">Comment tomorrow → upgrade</button>
+    <a class="btn secondary" href="https://www.instagram.com/housepercomment" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Comment on Instagram</a>
   </div>
 </section>
 
@@ -578,20 +578,22 @@ window.addEventListener('load',function(){
 <section class="modal-panel" id="claimCodePanel" hidden aria-label="Claim your house to edit it">
   <button class="close" id="claimCodeClose" aria-label="Close">✕</button>
   <h2>Claim your house</h2>
-  <p>Only the owner can edit a house. Enter the username and the 4-digit code from the DM sent when the house was auto-built. Example residents show a demo code on their house card.</p>
+  <p>Only the owner can edit a house. Your claim code was DM'd to you by @housepercomment when your house was built. No code? DM the page and it will reply with it.</p>
   <form id="claimCodeForm">
     <label for="editUser">Username</label>
     <input id="editUser" type="text" autocomplete="off" autocapitalize="none" placeholder="@yourname" required />
     <label for="editCode">4-digit claim code</label>
     <input id="editCode" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="••••" required />
     <button class="btn" type="submit" style="width:100%;margin-top:14px">Unlock editor</button>
+    <p id="claimCodeError" role="alert" style="color:#b3261e;font-weight:700" hidden></p>
   </form>
 </section>
 
 <section class="modal-panel" id="editorPanel" hidden aria-label="House editor">
   <button class="close" id="editorClose" aria-label="Close editor">✕</button>
   <h2 id="editorTitle">Edit @house</h2>
-  <p>Toggle any <b>unlocked</b> accessory — it appears on the 3D house straight away. Locked items show what unlocks them. Follower exclusives stay only while following.</p>
+  <p>Toggle any <b>unlocked</b> accessory — it appears on the 3D house straight away. Locked items show what unlocks them.</p>
+  <p>Your edits are saved on this device for now — cloud saving for every visitor arrives with the town database update.</p>
   <div id="editorAccList"></div>
   <div id="paintBox">
     <h3 style="font-family:'Bricolage Grotesque',sans-serif;margin:16px 0 2px">Paint palette</h3>
@@ -625,7 +627,7 @@ window.addEventListener('load',function(){
 </div>
 
 <nav class="mobile-dock" aria-label="Town panels">
-  <button type="button" id="activityBtn" aria-expanded="false" aria-controls="livePanel">Activity<span class="badge" id="activityBadge" hidden>0</span></button>
+  <button type="button" id="activityBtn" aria-expanded="false" aria-controls="livePanel">Activity</button>
   <button type="button" id="myHouseBtn" aria-expanded="false" aria-controls="claimPanel">My house</button>
   <button type="button" id="helpBtn" aria-expanded="false" aria-controls="howPanel"><span aria-hidden="true" style="font-weight:800;font-size:17px">?</span> Help</button>
 </nav>
@@ -639,30 +641,10 @@ window.addEventListener('load',function(){
 var errbox=document.getElementById('errbox');
 window.addEventListener('error',function(e){ errbox.style.display='block'; errbox.textContent='Something hiccuped: '+(e.message||'unknown error'); });
 
-/* ================= data ================= */
-/* Example residents only (labelled in the UI) — levels deliberately span all 10 tiers. */
-var EXAMPLES=[
- ["maya.creates","first comment!! building my dream house here",4],
- ["dev.with.dan","commenting so my future kids can visit this plot",12],
- ["samira.draws","a house with a red roof please, I trust the algorithm",1],
- ["codebykai","day 23 of commenting without skipping once",23],
- ["luna.reads","I just want a quiet corner near the trees",7],
- ["theo.plays","96 days, zero skips. legend mansion arc is REAL",96],
- ["zara.bakes","put me next to the bakery district pls",15],
- ["omar.builds","ironic that I build villas irl too",34],
- ["pixelpriya","my comment is a manor now. technology is beautiful",47],
- ["noor.codes","checking in from Lahore, claim my plot!",2],
- ["benji.makes","if this house has wifi I'm never leaving",18],
- ["ana.sketches","drawing every house in this town, starting with mine",28],
- ["yusuf.wav","soundtrack for the estate coming soon",55],
- ["ella.explores","I came, I commented every day, I got a grand estate",63],
- ["max.modular","upgrade arc starts now. brick house by Friday",9],
- ["ivy.grows","all I ask is sunlight for my villa plants",38],
- ["leo.lifts","palace strong like leg day. never skip",71],
- ["mia.maps","cartographer here, this town needs a map. oh wait",44],
- ["finn.frames","filming a tour of my landmark first",83],
- ["tara.types","manifesting the landmark with daily comments",88]
-];
+/* ================= data =================
+   The town is driven entirely by town-data.json (fetched on load, same
+   directory as this page). Residents, levels, unlocks and events all come
+   from that file — nothing is invented in the browser. */
 var STREETS=["Maple Row","Pixel Lane","Sunbeam Street","Comment Close","Lowpoly Avenue","Hashtag Terrace"];
 
 /* ================= 100 levels / 10 tiers ================= */
@@ -692,77 +674,87 @@ function nextTierName(level){
 
 /* ================= accessories & unlocks ================= */
 var ACCESSORIES=[
- {id:'flowerPots',name:'Flower pots',icon:'🪴',source:'like',threshold:1,condition:'Like 1 post'},
- {id:'paintPalette',name:'Paint palette',icon:'🎨',source:'like',threshold:3,condition:'Like 3 posts — repaint walls & roof'},
- {id:'gardenTree',name:'Garden tree',icon:'🌳',source:'like',threshold:5,condition:'Like 5 posts'},
- {id:'fencePack',name:'Fence style pack',icon:'🪵',source:'like',threshold:7,condition:'Like 7 posts'},
- {id:'stringLights',name:'String lights',icon:'💡',source:'like',threshold:10,condition:'Like 10 posts'},
+ {id:'flower_pots',name:'Flower pots',icon:'🪴',source:'like',threshold:1,condition:'Like 1 post'},
+ {id:'paint_palette',name:'Paint palette',icon:'🎨',source:'like',threshold:3,condition:'Like 3 posts — repaint walls & roof'},
+ {id:'garden_tree',name:'Garden tree',icon:'🌳',source:'like',threshold:5,condition:'Like 5 posts'},
+ {id:'fence_pack',name:'Fence style pack',icon:'🪵',source:'like',threshold:7,condition:'Like 7 posts'},
+ {id:'string_lights',name:'String lights',icon:'💡',source:'like',threshold:10,condition:'Like 10 posts'},
  {id:'fountain',name:'Fountain',icon:'⛲',source:'like',threshold:15,condition:'Like 15 posts'},
- {id:'dogHouse',name:'Dog house + dog',icon:'🐶',source:'like',threshold:20,condition:'Like 20 posts'},
- {id:'goldMailbox',name:'Golden mailbox',icon:'📬',source:'follow',threshold:1,condition:'Follow @comment.town'},
- {id:'nameFlag',name:'Name flag',icon:'🚩',source:'follow',threshold:1,condition:'Follow @comment.town'},
- {id:'welcomeMat',name:'Welcome mat',icon:'👋',source:'streak',threshold:3,condition:'Reach a 3-day comment streak'},
- {id:'chimneySmoke',name:'Chimney smoke',icon:'💨',source:'streak',threshold:7,condition:'Reach a 7-day comment streak'},
- {id:'gardenBench',name:'Garden bench',icon:'🪑',source:'streak',threshold:14,condition:'Reach a 14-day comment streak'},
- {id:'partyBunting',name:'Party bunting',icon:'🎉',source:'streak',threshold:30,condition:'Reach a 30-day comment streak'}
+ {id:'dog_house',name:'Dog house + dog',icon:'🐶',source:'like',threshold:20,condition:'Like 20 posts'},
+ {id:'golden_mailbox',name:'Golden mailbox',icon:'📬',source:'follow',threshold:1,condition:'Follow @housepercomment'},
+ {id:'name_flag',name:'Name flag',icon:'🚩',source:'follow',threshold:1,condition:'Follow @housepercomment'},
+ {id:'welcome_mat',name:'Welcome mat',icon:'👋',source:'streak',threshold:3,condition:'Reach a 3-day comment streak'},
+ {id:'chimney_smoke',name:'Chimney smoke',icon:'💨',source:'streak',threshold:7,condition:'Reach a 7-day comment streak'},
+ {id:'garden_bench',name:'Garden bench',icon:'🪑',source:'streak',threshold:14,condition:'Reach a 14-day comment streak'},
+ {id:'party_bunting',name:'Party bunting',icon:'🎉',source:'streak',threshold:30,condition:'Reach a 30-day comment streak'}
 ];
-function claimCodeFor(user){ return String(1000+(hashStr('code:'+user.toLowerCase())%9000)); }
+/* Unlocks come straight from the resident's record in town-data.json. */
 function accUnlocked(rec,acc){
-  if(!rec)return false;
-  if(acc.source==='like')return (rec.likesGiven||0)>=acc.threshold;
-  if(acc.source==='follow')return !!rec.isFollower;
-  if(acc.source==='streak')return Math.max(rec.streak||0,rec.bestStreak||0)>=acc.threshold;
-  return false;
+  if(!rec||!acc)return false;
+  return (rec.unlocks||[]).indexOf(acc.id)>=0;
 }
 function accById(id){ for(var i=0;i<ACCESSORIES.length;i++)if(ACCESSORIES[i].id===id)return ACCESSORIES[i]; return null; }
-function unlockedIds(rec){ return ACCESSORIES.filter(function(a){return accUnlocked(rec,a);}).map(function(a){return a.id;}); }
 function ensureAccessories(rec){
+  if(!rec.unlocks)rec.unlocks=[];
   if(rec.likesGiven==null)rec.likesGiven=0;
   if(rec.isFollower==null)rec.isFollower=false;
-  if(!rec.claimCode)rec.claimCode=claimCodeFor(rec.user);
   if(!rec.equipped)rec.equipped={};
   ACCESSORIES.forEach(function(a){ if(accUnlocked(rec,a)&&rec.equipped[a.id]==null)rec.equipped[a.id]=true; });
-  if(rec.wallColor==null)rec.wallColor=null;
-  if(rec.roofColor==null)rec.roofColor=null;
-}
-function syncUnlocks(rec,announce){
-  var before=rec._knownUnlocked||[];
-  ensureAccessories(rec);
-  var now=unlockedIds(rec);
-  var fresh=now.filter(function(id){return before.indexOf(id)<0;});
-  rec._knownUnlocked=now;
-  fresh.forEach(function(id){ rec.equipped[id]=true; });
-  if(announce&&fresh.length){
-    fresh.forEach(function(id){ var a=accById(id); toast('Unlocked for @'+rec.user+': '+a.name+'! Open “Edit my house” to apply it.'); addFeed('@'+rec.user+' unlocked <b>'+a.name+'</b> — '+(a.source==='like'?rec.likesGiven+' likes':a.source==='follow'?'now following':'streak '+Math.max(rec.streak,rec.bestStreak)+' days')+'.'); });
-    rebuildHouse(rec);
-  }
-  return fresh;
+  if(rec.wallColor===undefined)rec.wallColor=null;
+  if(rec.roofColor===undefined)rec.roofColor=null;
 }
 
-/* ================= simulated town clock (prototype) =================
-   Real page: a comment's calendar date. Here: Town Day 1 = Sat 7 Nov 2026,
-   advanced with the Next day / Skip controls so the streak can be tested. */
-var townDay=1;
-var BASE_DATE=new Date(2026,10,7);
+/* ================= dates ================= */
 var DAY_NAMES=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
 var MON_NAMES=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-function townDateStr(day){
-  var d=new Date(BASE_DATE.getFullYear(),BASE_DATE.getMonth(),BASE_DATE.getDate()+(day-1));
+function parseDate(iso){
+  if(!iso)return null;
+  var d=new Date(iso);
+  return isNaN(d.getTime())?null:d;
+}
+function fmtDate(iso){
+  var d=parseDate(iso);
+  if(!d)return iso?String(iso):"";
   return DAY_NAMES[d.getDay()]+" "+d.getDate()+" "+MON_NAMES[d.getMonth()]+" "+d.getFullYear();
 }
-function updateTownClock(){
-  var a=document.getElementById('townDayLabel'); if(a)a.textContent="Day "+townDay;
-  var b=document.getElementById('dcDayLabel'); if(b)b.textContent="Town Day "+townDay;
-  var c=document.getElementById('dcDateLabel'); if(c)c.textContent=townDateStr(townDay);
-  if(selected)renderStreak(selected);
+function fmtDateTime(iso){
+  var d=parseDate(iso);
+  if(!d)return iso?String(iso):"";
+  var hh=d.getHours(),mm=d.getMinutes();
+  return d.getDate()+" "+MON_NAMES[d.getMonth()]+" "+d.getFullYear()+", "+(hh<10?"0":"")+hh+":"+(mm<10?"0":"")+mm;
 }
-function streakGap(rec){ return townDay-rec.lastCommentDay; }
-function streakStatus(rec){
-  var gap=streakGap(rec);
-  if(rec.level>=MAX_LEVEL&&gap===0)return {kind:"today",text:"MAX LEVEL reached and checked in today. Streak still counts — keep it alive."};
-  if(gap===0)return {kind:"today",text:"Checked in today — no upgrade for another comment today. Come back tomorrow (Day "+(townDay+1)+") to keep the streak and gain +1 level."};
-  if(gap===1)return {kind:"due",text:"Due today! A comment today keeps the streak alive and upgrades +1 level."};
-  return {kind:"broken",text:"Missed "+(gap-1)+(gap-1===1?" day":" days")+" — streak is broken. A comment today restarts the streak at 1 with no upgrade (level kept). Comment again tomorrow to upgrade."};
+
+/* ================= editor persistence (this device) =================
+   A resident's accessory choices + paint are saved in localStorage keyed
+   by username and re-applied on load. */
+var EDITS_KEY='comment-town-edits';
+function loadAllEdits(){
+  try{ var raw=localStorage.getItem(EDITS_KEY); var o=raw?JSON.parse(raw):{}; return (o&&typeof o==='object')?o:{}; }
+  catch(e){ return {}; }
+}
+function applySavedEdits(rec){
+  var s=loadAllEdits()[rec.user];
+  if(!s)return;
+  if(s.equipped&&typeof s.equipped==='object')rec.equipped=s.equipped;
+  if(s.wallColor!=null)rec.wallColor=s.wallColor;
+  if(s.roofColor!=null)rec.roofColor=s.roofColor;
+}
+function saveEdits(rec){
+  try{
+    var all=loadAllEdits();
+    all[rec.user]={equipped:rec.equipped||{},wallColor:rec.wallColor!=null?rec.wallColor:null,roofColor:rec.roofColor!=null?rec.roofColor:null};
+    localStorage.setItem(EDITS_KEY,JSON.stringify(all));
+  }catch(e){ /* storage unavailable — edits last for this visit only */ }
+}
+
+/* ================= claim-code verification =================
+   SHA-256 hex of "username:code" (username lowercased), compared with the
+   resident's claim_code_hash from town-data.json. */
+function sha256Hex(str){
+  var buf=new TextEncoder().encode(str);
+  return crypto.subtle.digest('SHA-256',buf).then(function(hash){
+    return Array.prototype.map.call(new Uint8Array(hash),function(b){ return ('0'+b.toString(16)).slice(-2); }).join('');
+  });
 }
 
 /* ================= helpers ================= */
@@ -779,20 +771,27 @@ function toast(msg){
   var el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
   clearTimeout(toast._t);toast._t=setTimeout(function(){el.classList.remove('show');},3400);
 }
-function addFeed(html){
+/* Activity panel — the real events from town-data.json, newest first. */
+function renderEvents(events){
   var list=document.getElementById('liveList'); if(!list)return;
-  var li=document.createElement('li');
-  li.innerHTML='<span class="when">Day '+townDay+' · just now</span> · '+html;
-  list.insertBefore(li,list.firstChild);
-  while(list.children.length>30)list.removeChild(list.lastChild);
-  noteActivity();
-}
-function addDM(rec){
-  var box=document.getElementById('dmList'); if(!box||!rec)return;
-  if(box.dataset.empty==null){ box.innerHTML=''; box.dataset.empty='1'; }
-  var d=document.createElement('div'); d.className='dm-item';
-  d.innerHTML='💬 <b>@comment.town</b> → @'+rec.user+'<br />Your house is live on '+rec.street+'! Claim code: <code>'+rec.claimCode+'</code><br /><span style="color:var(--ink-soft)">Use it in “Edit my house” on the town site. Keep it private — anyone with it can edit your house.</span>';
-  box.insertBefore(d,box.firstChild);
+  list.innerHTML='';
+  var sorted=(events||[]).slice().sort(function(a,b){ return String(b.ts||'').localeCompare(String(a.ts||'')); });
+  if(!sorted.length){
+    var li=document.createElement('li');
+    li.textContent='No houses yet — be the first.';
+    list.appendChild(li);
+    return;
+  }
+  sorted.slice(0,40).forEach(function(ev){
+    var li=document.createElement('li');
+    var when=document.createElement('span'); when.className='when'; when.textContent=ev.ts?fmtDateTime(ev.ts):'';
+    var b=document.createElement('b');
+    b.textContent=ev.type==='upgrade'
+      ? '@'+ev.username+' upgraded to Level '+(ev.level!=null?ev.level:'')
+      : '@'+ev.username+'’s house was built';
+    li.appendChild(when); li.appendChild(document.createTextNode(' · ')); li.appendChild(b);
+    list.appendChild(li);
+  });
 }
 
 /* ================= three setup ================= */
@@ -1135,18 +1134,18 @@ function buildHouseMesh(rec){
     function on(id){ return !!eq[id]&&accUnlocked(rec,accById(id)); }
     function box(w,h,d,c,x,y,z){ var m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),new THREE.MeshLambertMaterial({color:c})); m.position.set(x,y,z); m.castShadow=true; g.add(m); return m; }
     function sph(r,c,x,y,z){ var m=new THREE.Mesh(new THREE.SphereGeometry(r,8,7),new THREE.MeshLambertMaterial({color:c})); m.position.set(x,y,z); m.castShadow=true; g.add(m); return m; }
-    if(on('flowerPots')){ [-1.05,1.05].forEach(function(px){ box(0.5,0.42,0.5,0xc96a3a,px,0.42,D/2+0.55); sph(0.28,0xff6b9d,px,0.78,D/2+0.55); }); }
-    if(on('welcomeMat')){ box(1.5,0.07,0.8,0xd9534f,0,0.3,D/2+0.95); }
-    if(on('gardenTree')){ var tr=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.22,1.1,6),new THREE.MeshLambertMaterial({color:0x8a5a33})); tr.position.set(4.2,0.75,-3.4); g.add(tr); var tp=new THREE.Mesh(new THREE.ConeGeometry(1.3,2.7,7),new THREE.MeshLambertMaterial({color:0x2e9e5b,flatShading:true})); tp.position.set(4.2,2.6,-3.4); tp.castShadow=true; g.add(tp); }
-    if(on('fencePack')){ for(var fx2=-4.6;fx2<=4.6;fx2+=1.15){ if(Math.abs(fx2)<1.2)continue; box(0.18,1.05,0.18,0x6b4a2f,fx2,0.72,4.9); } box(10,0.14,0.1,0x6b4a2f,0,1.05,4.9); box(10,0.14,0.1,0x6b4a2f,0,0.55,4.9); }
-    if(on('stringLights')){ var pts2=[]; for(var s2=0;s2<=10;s2++){ pts2.push(new THREE.Vector3(-4.4+s2*0.88,2.95-Math.sin(s2/10*Math.PI)*0.45,D/2+0.35)); } g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts2),new THREE.LineBasicMaterial({color:0x8a6d1f}))); pts2.forEach(function(p,i){ if(i%2)return; var b=new THREE.Mesh(new THREE.SphereGeometry(0.13,6,6),new THREE.MeshBasicMaterial({color:i%4?0xffe9a8:0xff8a5c})); b.position.copy(p); b.position.y-=0.16; g.add(b); }); }
+    if(on('flower_pots')){ [-1.05,1.05].forEach(function(px){ box(0.5,0.42,0.5,0xc96a3a,px,0.42,D/2+0.55); sph(0.28,0xff6b9d,px,0.78,D/2+0.55); }); }
+    if(on('welcome_mat')){ box(1.5,0.07,0.8,0xd9534f,0,0.3,D/2+0.95); }
+    if(on('garden_tree')){ var tr=new THREE.Mesh(new THREE.CylinderGeometry(0.16,0.22,1.1,6),new THREE.MeshLambertMaterial({color:0x8a5a33})); tr.position.set(4.2,0.75,-3.4); g.add(tr); var tp=new THREE.Mesh(new THREE.ConeGeometry(1.3,2.7,7),new THREE.MeshLambertMaterial({color:0x2e9e5b,flatShading:true})); tp.position.set(4.2,2.6,-3.4); tp.castShadow=true; g.add(tp); }
+    if(on('fence_pack')){ for(var fx2=-4.6;fx2<=4.6;fx2+=1.15){ if(Math.abs(fx2)<1.2)continue; box(0.18,1.05,0.18,0x6b4a2f,fx2,0.72,4.9); } box(10,0.14,0.1,0x6b4a2f,0,1.05,4.9); box(10,0.14,0.1,0x6b4a2f,0,0.55,4.9); }
+    if(on('string_lights')){ var pts2=[]; for(var s2=0;s2<=10;s2++){ pts2.push(new THREE.Vector3(-4.4+s2*0.88,2.95-Math.sin(s2/10*Math.PI)*0.45,D/2+0.35)); } g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts2),new THREE.LineBasicMaterial({color:0x8a6d1f}))); pts2.forEach(function(p,i){ if(i%2)return; var b=new THREE.Mesh(new THREE.SphereGeometry(0.13,6,6),new THREE.MeshBasicMaterial({color:i%4?0xffe9a8:0xff8a5c})); b.position.copy(p); b.position.y-=0.16; g.add(b); }); }
     if(on('fountain')){ var fb=new THREE.Mesh(new THREE.CylinderGeometry(1.05,1.2,0.55,12),new THREE.MeshLambertMaterial({color:0xb9c4c9})); fb.position.set(-3.9,0.48,3.2); fb.castShadow=true; g.add(fb); var fw=new THREE.Mesh(new THREE.CylinderGeometry(0.85,0.85,0.12,12),new THREE.MeshPhongMaterial({color:0x4db6e2,shininess:90})); fw.position.set(-3.9,0.78,3.2); g.add(fw); var fs=new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.2,0.8,8),new THREE.MeshLambertMaterial({color:0xb9c4c9})); fs.position.set(-3.9,1.05,3.2); g.add(fs); }
-    if(on('dogHouse')){ box(1.15,0.95,1.05,0xb85c48,-4.1,0.68,-0.6); var dr=new THREE.Mesh(new THREE.ConeGeometry(0.95,0.55,4),new THREE.MeshLambertMaterial({color:0x5a4a42,flatShading:true})); dr.rotation.y=Math.PI/4; dr.position.set(-4.1,1.42,-0.6); g.add(dr); box(0.55,0.5,0.7,0xf3ead8,-4.1,0.55,0.35); sph(0.26,0xf3ead8,-4.1,0.92,0.42); }
-    if(on('goldMailbox')){ box(0.14,0.95,0.14,0x8a6d1f,-2.7,0.68,4.6); var gm=box(0.9,0.48,0.52,0xd4a017,-2.7,1.32,4.6); gm.material=new THREE.MeshLambertMaterial({color:0xd4a017,emissive:0x554400}); }
-    if(on('nameFlag')){ var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.07,3.1,6),new THREE.MeshLambertMaterial({color:0x333a40})); pole.position.set(4.7,1.75,4.4); g.add(pole); var flag=new THREE.Mesh(new THREE.BoxGeometry(1.35,0.75,0.06),new THREE.MeshLambertMaterial({color:roofC})); flag.position.set(5.42,3.0,4.4); g.add(flag); }
-    if(on('chimneySmoke')){ [0,1,2].forEach(function(si){ var sm=new THREE.Mesh(new THREE.SphereGeometry(0.32+si*0.14,8,7),new THREE.MeshLambertMaterial({color:0xffffff,transparent:true,opacity:0.55-si*0.12})); sm.position.set(W/2-1+(si*0.18),bodyH+2.8+si*0.55,-D/2+1.2); sm.name='smokePuff'; g.add(sm); }); }
-    if(on('gardenBench')){ box(1.7,0.12,0.5,0x8a5a33,3.1,0.62,3.6); box(1.7,0.55,0.1,0x8a5a33,3.1,0.95,3.82); box(0.12,0.42,0.45,0x5a3a22,2.4,0.4,3.6); box(0.12,0.42,0.45,0x5a3a22,3.8,0.4,3.6); }
-    if(on('partyBunting')){ var bp=[]; for(var bi=0;bi<=12;bi++){ bp.push(new THREE.Vector3(-4.8+bi*0.8,4.15-Math.sin(bi/12*Math.PI)*0.6,4.95)); } g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(bp),new THREE.LineBasicMaterial({color:0x333a40}))); var bcols=[0xff6b4a,0xffc53d,0x2e9e5b,0x3f7cac]; bp.forEach(function(p,i){ if(i%2||i===0||i===12)return; var tri=new THREE.Mesh(new THREE.ConeGeometry(0.22,0.42,3),new THREE.MeshLambertMaterial({color:bcols[i%4],flatShading:true})); tri.rotation.x=Math.PI; tri.position.set(p.x,p.y-0.22,p.z); g.add(tri); }); }
+    if(on('dog_house')){ box(1.15,0.95,1.05,0xb85c48,-4.1,0.68,-0.6); var dr=new THREE.Mesh(new THREE.ConeGeometry(0.95,0.55,4),new THREE.MeshLambertMaterial({color:0x5a4a42,flatShading:true})); dr.rotation.y=Math.PI/4; dr.position.set(-4.1,1.42,-0.6); g.add(dr); box(0.55,0.5,0.7,0xf3ead8,-4.1,0.55,0.35); sph(0.26,0xf3ead8,-4.1,0.92,0.42); }
+    if(on('golden_mailbox')){ box(0.14,0.95,0.14,0x8a6d1f,-2.7,0.68,4.6); var gm=box(0.9,0.48,0.52,0xd4a017,-2.7,1.32,4.6); gm.material=new THREE.MeshLambertMaterial({color:0xd4a017,emissive:0x554400}); }
+    if(on('name_flag')){ var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.07,0.07,3.1,6),new THREE.MeshLambertMaterial({color:0x333a40})); pole.position.set(4.7,1.75,4.4); g.add(pole); var flag=new THREE.Mesh(new THREE.BoxGeometry(1.35,0.75,0.06),new THREE.MeshLambertMaterial({color:roofC})); flag.position.set(5.42,3.0,4.4); g.add(flag); }
+    if(on('chimney_smoke')){ [0,1,2].forEach(function(si){ var sm=new THREE.Mesh(new THREE.SphereGeometry(0.32+si*0.14,8,7),new THREE.MeshLambertMaterial({color:0xffffff,transparent:true,opacity:0.55-si*0.12})); sm.position.set(W/2-1+(si*0.18),bodyH+2.8+si*0.55,-D/2+1.2); sm.name='smokePuff'; g.add(sm); }); }
+    if(on('garden_bench')){ box(1.7,0.12,0.5,0x8a5a33,3.1,0.62,3.6); box(1.7,0.55,0.1,0x8a5a33,3.1,0.95,3.82); box(0.12,0.42,0.45,0x5a3a22,2.4,0.4,3.6); box(0.12,0.42,0.45,0x5a3a22,3.8,0.4,3.6); }
+    if(on('party_bunting')){ var bp=[]; for(var bi=0;bi<=12;bi++){ bp.push(new THREE.Vector3(-4.8+bi*0.8,4.15-Math.sin(bi/12*Math.PI)*0.6,4.95)); } g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(bp),new THREE.LineBasicMaterial({color:0x333a40}))); var bcols=[0xff6b4a,0xffc53d,0x2e9e5b,0x3f7cac]; bp.forEach(function(p,i){ if(i%2||i===0||i===12)return; var tri=new THREE.Mesh(new THREE.ConeGeometry(0.22,0.42,3),new THREE.MeshLambertMaterial({color:bcols[i%4],flatShading:true})); tri.rotation.x=Math.PI; tri.position.set(p.x,p.y-0.22,p.z); g.add(tri); }); }
   })();
 
   var sign=nameSprite(rec.user,roofC);
@@ -1165,64 +1164,36 @@ function buildHouseMesh(rec){
 }
 
 function normaliseUser(u){ return String(u||"").replace(/^@/,"").trim().toLowerCase().replace(/[^a-z0-9._]/g,""); }
-/* Seed / direct creation — bypasses the streak rule (examples + first build). */
-function addHouse(user,comment,level,silent,seedStreak,seedLastDay){
-  user=normaliseUser(user);
-  if(!user)return null;
-  if(byUser[user])return byUser[user];
-  if(nextPlot>=TOTAL_PLOTS){ toast("The town is full — every plot is taken!"); return null; }
+/* Build one house from a resident record in town-data.json. The 3D look is
+   deterministic from the username; every fact shown comes from the record. */
+function addHouse(data){
+  var user=normaliseUser(data&&data.username);
+  if(!user||byUser[user])return null;
+  if(nextPlot>=TOTAL_PLOTS)return null;
   var idx=nextPlot++;
   var p=plotPos(idx);
   while(Math.abs(p.x)<9&&Math.abs(p.z)<9){ idx=nextPlot++; p=plotPos(idx); if(nextPlot>TOTAL_PLOTS)break; }
-  var lv=Math.max(1,Math.min(MAX_LEVEL,level||1));
-  var _h=hashStr(user);
-  var rec={user:user,comment:cleanText(comment),level:lv,pos:p,plot:idx,
+  var rec={user:user,
+           comment:(data.display_comment?cleanText(data.display_comment):null),
+           level:Math.max(1,Math.min(MAX_LEVEL,parseInt(data.level,10)||1)),
+           pos:p,plot:idx,
            street:STREETS[hashStr(user)%STREETS.length],plotNo:idx+1,
-           streak:(seedStreak!=null?seedStreak:1),bestStreak:(seedStreak!=null?seedStreak:1),
-           lastCommentDay:(seedLastDay!=null?seedLastDay:townDay),totalComments:Math.max(1,lv),isExample:!!silent,
-           likesGiven: silent?Math.min(24,Math.floor(lv/4)+(_h%9)):0,
-           isFollower: silent?(_h%3!==0):false,
-           claimCode:claimCodeFor(user),equipped:{},wallColor:null,roofColor:null};
+           streak:Math.max(0,parseInt(data.streak,10)||0),
+           bestStreak:Math.max(0,parseInt(data.best_streak,10)||0),
+           likesGiven:Math.max(0,parseInt(data.likes,10)||0),
+           isFollower:!!data.following,
+           unlocks:Array.isArray(data.unlocks)?data.unlocks.slice():[],
+           claimCodeHash:String(data.claim_code_hash||"").toLowerCase(),
+           joinedDate:data.joined_date||null,
+           lastCommentDate:data.last_comment_date||null,
+           equipped:{},wallColor:null,roofColor:null};
+  applySavedEdits(rec);
   ensureAccessories(rec);
-  ACCESSORIES.forEach(function(a){ if(accUnlocked(rec,a))rec.equipped[a.id]=true; });
-  rec._knownUnlocked=unlockedIds(rec);
   rec.group=buildHouseMesh(rec);
-  if(!silent)addDM(rec);
   houses.push(rec);byUser[user]=rec;
   rec.group.traverse(function(o){if(o.isMesh)pickMeshes.push(o);});
   updateCount();
-  if(!silent)refreshDatalist();
   return rec;
-}
-/* The streak rule — the ONLY way a level is ever gained.
-   Returns {rec, outcome} outcome: built | upgraded | same-day | broken | maxed */
-function processComment(user,comment){
-  user=normaliseUser(user);
-  if(!user)return {rec:null,outcome:"invalid"};
-  var ex=byUser[user];
-  if(!ex){
-    var created=addHouse(user,comment,1,false);
-    return {rec:created,outcome:created?"built":"full"};
-  }
-  var gap=townDay-ex.lastCommentDay;
-  if(gap===0){
-    return {rec:ex,outcome:"same-day"};
-  }
-  if(gap===1){
-    ex.streak++; ex.bestStreak=Math.max(ex.bestStreak,ex.streak);
-    ex.lastCommentDay=townDay; ex.totalComments++;
-    ex.comment=cleanText(comment)||ex.comment;
-    if(ex.level>=MAX_LEVEL){ syncUnlocks(ex,true); rebuildHouse(ex); return {rec:ex,outcome:"maxed"}; }
-    var oldTier=tierOf(ex.level);
-    ex.level++;
-    rebuildHouse(ex);
-    syncUnlocks(ex,true);
-    return {rec:ex,outcome:(tierOf(ex.level)>oldTier)?"tier-up":"upgraded",prevTier:oldTier};
-  }
-  /* gap > 1 (or clock moved backwards in a test) — streak breaks, level kept */
-  ex.streak=1; ex.lastCommentDay=townDay; ex.totalComments++;
-  ex.comment=cleanText(comment)||ex.comment;
-  return {rec:ex,outcome:"broken",missed:Math.max(0,gap-1)};
 }
 
 function rebuildHouse(rec){
@@ -1251,14 +1222,38 @@ var ring=new THREE.Mesh(new THREE.RingGeometry(6.4,7.1,40),new THREE.MeshBasicMa
 ring.rotation.x=-Math.PI/2;ring.position.y=0.32;ring.visible=false;scene.add(ring);
 function showRing(rec){ring.position.x=rec.pos.x;ring.position.z=rec.pos.z;ring.visible=true;}
 
-/* seed example town — spread of streaks; every 3rd resident is due today (last commented yesterday) */
-EXAMPLES.forEach(function(e,i){
-  var hh=hashStr(e[0]);
-  var seedStreak=e[2]>=90?(18+(hh%10)):(e[2]>=50?(10+(hh%8)):((hh%7)+1));
-  var seedLast=(i%3===0)?townDay-1:townDay;
-  addHouse(e[0],e[1],e[2],true,seedStreak,seedLast);
-});
-updateCount();refreshDatalist();updateTownClock();
+/* ================= load the real town ================= */
+function renderTown(data,loadFailed){
+  var residents=(data&&Array.isArray(data.residents))?data.residents:[];
+  residents.forEach(function(r){ addHouse(r); });
+  refreshDatalist(); updateCount();
+  var label='Town data updated '+((data&&data.updated_at)?fmtDateTime(data.updated_at):'—');
+  var chip=document.getElementById('updatedChip'); if(chip)chip.textContent=label;
+  var sub=document.getElementById('activitySub');
+  if(sub)sub.textContent=label+'. New houses and upgrades from @housepercomment on Instagram, added in batches about every 15 minutes.';
+  renderEvents(data&&Array.isArray(data.events)?data.events:[]);
+  var empty=document.getElementById('emptyPanel');
+  if(residents.length===0){
+    empty.hidden=false;
+    document.getElementById('emptyNote').hidden=!loadFailed;
+  }else{
+    empty.hidden=true;
+    /* greet by flying over the first house — card stays shut so every control stays reachable */
+    showRing(houses[0]); flyTo(houses[0],30);
+  }
+}
+function loadTown(){
+  fetch('town-data.json',{cache:'no-store'}).then(function(r){
+    if(!r.ok)throw new Error('town-data.json HTTP '+r.status);
+    return r.json();
+  }).then(function(data){
+    renderTown(data,false);
+  }).catch(function(){
+    renderTown({residents:[],events:[],updated_at:null},true);
+  });
+}
+updateCount();refreshDatalist();
+loadTown();
 
 /* ================= camera flight ================= */
 var flight=null;
@@ -1284,10 +1279,9 @@ function levelFeatures(level){
   for(var i=0;i<lit;i++)f.push(TIER_STEPS[i]);
   return f;
 }
-function renderStreak(rec){
+function renderLevel(rec){
   var box=document.getElementById('detailStreak');
   if(!box||selected!==rec)return;
-  var st=streakStatus(rec);
   var lit=levelInTier(rec.level);
   var isMax=rec.level>=MAX_LEVEL;
   var pct=isMax?100:(lit/10*100);
@@ -1299,43 +1293,38 @@ function renderStreak(rec){
   }
   ladderHtml+='</div>';
   box.innerHTML=
-    '<div class="streak-top"><div class="streak-count">Level '+rec.level+' / 100<small>'+tierName(rec.level)+' · Tier '+(tierOf(rec.level)+1)+' of 10 · Best streak '+rec.bestStreak+' · '+rec.totalComments+' comments</small></div>'+
+    '<div class="streak-top"><div class="streak-count">Level '+rec.level+' / 100<small>'+tierName(rec.level)+' · Tier '+(tierOf(rec.level)+1)+' of 10 · Best streak '+rec.bestStreak+' days</small></div>'+
     '<div class="streak-flame"><div class="n">'+rec.streak+'</div><div class="l">Day streak</div></div></div>'+
-    '<div class="streak-status '+(st.kind==='due'?'due':(st.kind==='broken'?'broken':''))+'">'+st.text+'</div>'+
     ladderHtml+
     (isMax
       ? '<div><span class="max-badge">MAX LEVEL — LEGEND MANSION COMPLETE</span></div>'
       : '<div class="tier-bar" role="progressbar" aria-valuenow="'+lit+'" aria-valuemin="0" aria-valuemax="10" aria-label="Progress to next tier"><i style="width:'+pct+'%"></i></div>'+
         '<div class="tier-bar-lab"><span><b>'+lit+' / 10</b> in '+tierName(rec.level)+'</span><span>'+(10-lit)+' levels to <b>'+nextName+'</b></span></div>'+
         '<p class="streak-next">Next level ('+(rec.level+1)+') adds: <b>'+TIER_STEPS[lit]+'</b>'+(lit===9?' — and completes this tier. The next comment after that starts <b>'+nextName+'</b> with a bigger build and new materials.':'')+'</p>');
-  var btn=document.getElementById('detailUpgrade');
-  var gap=streakGap(rec);
-  if(isMax){ btn.textContent='MAX LEVEL — no more upgrades'; }
-  else if(gap===0){ btn.textContent='Advance to tomorrow & comment → Level '+(rec.level+1); }
-  else if(gap===1){ btn.textContent='Comment today (keep streak) → Level '+(rec.level+1); }
-  else { btn.textContent='Comment today → restart streak (no upgrade)'; }
 }
 function selectHouse(rec,fly){
   closeSheets();
   selected=rec;showRing(rec);
   document.getElementById('detailUser').textContent='@'+rec.user;
-  document.getElementById('detailAddr').textContent='Plot '+rec.plotNo+' · '+rec.street+(rec.isExample?' · Example resident':'');
-  document.getElementById('detailComment').textContent='“'+rec.comment+'”';
+  document.getElementById('detailAddr').textContent='Plot '+rec.plotNo+' · '+rec.street;
+  var quote=document.getElementById('detailComment');
+  if(rec.comment){ quote.hidden=false; quote.textContent='“'+rec.comment+'”'; }
+  else { quote.hidden=true; quote.textContent=''; }
   var av=document.getElementById('detailAvatar');
   av.textContent=rec.user.charAt(0).toUpperCase();
   av.style.background=AVATARS[hashStr(rec.user)%AVATARS.length];
   var meta=document.getElementById('detailMeta');meta.innerHTML="";
-  var lv=document.createElement('span');lv.className='tag hot';lv.textContent='Level '+rec.level+'/100 · '+tierName(rec.level);meta.appendChild(lv);
-  var sk=document.createElement('span');sk.className='tag';sk.textContent=rec.streak+'-day streak';meta.appendChild(sk);
-  var lk=document.createElement('span');lk.className='tag';lk.textContent='♥ '+(rec.likesGiven||0)+' likes given';meta.appendChild(lk);
-  var fw=document.createElement('span');fw.className='tag';fw.textContent=rec.isFollower?'✓ Follower':'Not following yet';meta.appendChild(fw);
-  if(rec.isExample){ var dc=document.createElement('span');dc.className='tag hot';dc.textContent='Demo claim code: '+rec.claimCode;meta.appendChild(dc); }
-  levelFeatures(rec.level).slice(-3).forEach(function(f){
-    var s=document.createElement('span');s.className='tag';s.textContent=f;meta.appendChild(s);
-  });
+  function addTag(txt,cls){ var s=document.createElement('span');s.className='tag'+(cls?' '+cls:'');s.textContent=txt;meta.appendChild(s); }
+  addTag('Level '+rec.level+'/100 · '+tierName(rec.level),'hot');
+  addTag('Streak: '+rec.streak+' days');
+  addTag('Best streak: '+rec.bestStreak+' days');
+  addTag('♥ '+(rec.likesGiven||0)+' likes');
+  addTag('Following the page: '+(rec.isFollower?'Yes':'No'));
+  if(rec.joinedDate)addTag('Joined '+fmtDate(rec.joinedDate));
+  levelFeatures(rec.level).slice(-3).forEach(function(f){ addTag(f); });
   detail.hidden=false;
   document.body.classList.add('detail-open');
-  renderStreak(rec);
+  renderLevel(rec);
   renderAccessories(rec);
   if(fly)flyTo(rec);
 }
@@ -1354,21 +1343,6 @@ document.getElementById('detailClose').addEventListener('click',function(){
   detail.hidden=true;selected=null;ring.visible=false;
   document.body.classList.remove('detail-open');
 });
-document.getElementById('detailUpgrade').addEventListener('click',function(){
-  if(!selected)return;
-  if(selected.level>=MAX_LEVEL){ toast('@'+selected.user+' is at MAX LEVEL 100 — Legend Mansion complete!'); return; }
-  var gap=streakGap(selected);
-  if(gap===0){ townDay++; updateTownClock(); } /* sleep to tomorrow, then this comment lands consecutively */
-  var res=processComment(selected.user,selected.comment);
-  var rec=res.rec||selected;
-  selectHouse(rec,false);
-  if(res.outcome==="upgraded")toast('Streak kept! @'+rec.user+' → Level '+rec.level+' ('+tierName(rec.level)+') — added '+TIER_STEPS[levelInTier(rec.level)-1]+'.');
-  else if(res.outcome==="tier-up")toast('TIER UP! @'+rec.user+' → Level '+rec.level+' — welcome to '+tierName(rec.level)+'!');
-  else if(res.outcome==="broken")toast('Streak broken — @'+rec.user+' restarts at a 1-day streak. Level '+rec.level+' kept, no upgrade today.');
-  else if(res.outcome==="maxed")toast('@'+rec.user+' is already MAX LEVEL 100.');
-  else toast('That comment did not upgrade @'+rec.user+'.');
-});
-
 /* ================= claim + editor ================= */
 var editingRec=null;
 var scrim=document.getElementById('scrim');
@@ -1387,15 +1361,41 @@ document.getElementById('detailEdit').addEventListener('click',function(){
 document.getElementById('claimCodeClose').addEventListener('click',function(){showModal(null);});
 document.getElementById('editorClose').addEventListener('click',function(){showModal(null);});
 scrim.addEventListener('click',function(){showModal(null);});
+/* Verify username + 4-digit code against the resident's claim_code_hash.
+   onError(message) shows a clear error and never opens the editor. */
+function attemptUnlock(u,code,errEl){
+  function fail(msg){
+    if(errEl){ errEl.textContent=msg; errEl.hidden=false; }
+    toast(msg);
+  }
+  if(errEl)errEl.hidden=true;
+  var rec=byUser[u];
+  if(!rec){ fail('No house for @'+u+' yet — comment on the latest @housepercomment post and one gets built for you.'); return; }
+  if(!/^\d{4}$/.test(code)){ fail('Enter the 4-digit claim code that was DM’d to you.'); return; }
+  if(!rec.claimCodeHash){ fail('This house has no claim code on record yet — DM @housepercomment and it will reply with one.'); return; }
+  if(!window.crypto||!crypto.subtle){ fail('Editing needs a secure (https) connection — open the town over https and try again.'); return; }
+  sha256Hex(u+':'+code).then(function(hex){
+    if(hex===rec.claimCodeHash){
+      editingRec=rec;
+      setClaim(false); claimPanel.classList.remove('sheet-open'); syncSheetBody();
+      openEditor(rec);
+    }
+    else fail('Wrong claim code for @'+u+' — only the owner can edit this house. Check the DM from @housepercomment for the right code.');
+  }).catch(function(){ fail('Could not verify that code — please try again.'); });
+}
 document.getElementById('claimCodeForm').addEventListener('submit',function(e){
   e.preventDefault();
-  var u=normaliseUser(document.getElementById('editUser').value);
-  var code=document.getElementById('editCode').value.trim();
-  var rec=byUser[u];
-  if(!rec){ toast('No house for @'+u+' yet — comment first and one is auto-built for you.'); return; }
-  if(code!==rec.claimCode){ toast('Wrong claim code for @'+u+' — that house can only be edited by its owner. Check the DM for the right code.'); return; }
-  editingRec=rec;
-  openEditor(rec);
+  attemptUnlock(
+    normaliseUser(document.getElementById('editUser').value),
+    document.getElementById('editCode').value.trim(),
+    document.getElementById('claimCodeError'));
+});
+document.getElementById('myHouseForm').addEventListener('submit',function(e){
+  e.preventDefault();
+  attemptUnlock(
+    normaliseUser(document.getElementById('myHouseUser').value),
+    document.getElementById('myHouseCode').value.trim(),
+    document.getElementById('myHouseError'));
 });
 function openEditor(rec){
   showModal('editor');
@@ -1406,7 +1406,7 @@ function renderEditor(rec){
   ensureAccessories(rec);
   var list=document.getElementById('editorAccList'); list.innerHTML='';
   ACCESSORIES.forEach(function(a){
-    if(a.id==='paintPalette')return; /* handled in paint box */
+    if(a.id==='paint_palette')return; /* handled in paint box */
     var un=accUnlocked(rec,a), eq=un&&!!rec.equipped[a.id];
     var row=document.createElement('div'); row.className='editor-acc';
     row.innerHTML='<span>'+a.icon+' <b>'+a.name+'</b><small>'+(un?(eq?'Applied to your house':'Unlocked — not applied'):('🔒 '+a.condition))+'</small></span>';
@@ -1415,117 +1415,27 @@ function renderEditor(rec){
     btn.disabled=!un; if(eq)btn.className='applied';
     btn.addEventListener('click',function(){
       rec.equipped[a.id]=!rec.equipped[a.id];
+      saveEdits(rec);
       rebuildHouse(rec); renderEditor(rec); if(selected===rec){selectHouse(rec,false);}
       toast(rec.equipped[a.id]?a.name+' applied to @'+rec.user+'’s house.':a.name+' removed.');
     });
     row.appendChild(btn); list.appendChild(row);
   });
-  var paintUn=accUnlocked(rec,accById('paintPalette'));
+  var paintUn=accUnlocked(rec,accById('paint_palette'));
   var pw=document.getElementById('paintWall'), pr=document.getElementById('paintRoof');
   pw.disabled=!paintUn; pr.disabled=!paintUn;
   function hex(n){ return '#'+new THREE.Color(n).getHexString(); }
   pw.value=hex(rec.wallColor!=null?rec.wallColor:(rec._wallHex!=null?rec._wallHex:0xf6e3c5));
   pr.value=hex(rec.roofColor!=null?rec.roofColor:(rec._roofHex!=null?rec._roofHex:0xd9534f));
-  document.getElementById('paintHint').textContent=paintUn?'Paint palette unlocked — pick colours and they apply live. Save keeps them.':'🔒 Paint palette — like 3 posts to unlock repainting ('+(rec.likesGiven||0)+' likes so far).';
-  pw.oninput=function(){ rec.wallColor=parseInt(pw.value.slice(1),16); rebuildHouse(rec); };
-  pr.oninput=function(){ rec.roofColor=parseInt(pr.value.slice(1),16); rebuildHouse(rec); };
+  document.getElementById('paintHint').textContent=paintUn?'Paint palette unlocked — pick colours and they apply live.':'🔒 Paint palette — like 3 posts to unlock repainting ('+(rec.likesGiven||0)+' likes so far).';
+  pw.oninput=function(){ rec.wallColor=parseInt(pw.value.slice(1),16); saveEdits(rec); rebuildHouse(rec); };
+  pr.oninput=function(){ rec.roofColor=parseInt(pr.value.slice(1),16); saveEdits(rec); rebuildHouse(rec); };
 }
 document.getElementById('editorResetPaint').addEventListener('click',function(){
-  if(!editingRec)return; editingRec.wallColor=null; editingRec.roofColor=null; rebuildHouse(editingRec); renderEditor(editingRec); toast('Paint reset to the tier colours for @'+editingRec.user+'.');
+  if(!editingRec)return; editingRec.wallColor=null; editingRec.roofColor=null; saveEdits(editingRec); rebuildHouse(editingRec); renderEditor(editingRec); toast('Paint reset to the tier colours for @'+editingRec.user+'.');
 });
 document.getElementById('editorSave').addEventListener('click',function(){
-  if(!editingRec)return; showModal(null); selectHouse(editingRec,true); toast('Saved! @'+editingRec.user+'’s house is updated in the town.');
-});
-
-/* ================= live auto feed (simulation) ================= */
-var LIVE_NEW=[
- ['zoya.clicks','just found this town, house me pls'],['hamza.gif','commenting from Karachi, claim my plot'],['ruby.runs','day one! excited for my cottage'],['kenji.jpg','a quiet house near the fountain please'],['tessa.talks','i never miss a day, watch me'],['bilal.bakes','put me by the bakery street'],['nina.notes','study break = comment break'],['gus.grows','here for the garden era'],['sana.snaps','first comment, first house??'],['leo.log','logging my day 1 here'],['faye.films','filming my house reveal soon'],['adam.arts','paint palette grind starts now'],['hira.hikes','a house with a view please'],['cole.codes','automated house? say less'],['dina.draws','sketching my future mansion'],['rafi.rides','park my house near the road pls']
-];
-var LIVE_COMMENTS=['back again — no skip, upgrade me','day streak keeps growing','commenting before midnight counts right?','another day, another level','house check-in, lets gooo'];
-var liveIdx=0, livePaused=false, liveTimer=null;
-function giveLike(rec){
-  var before=unlockedIds(rec);
-  rec.likesGiven=(rec.likesGiven||0)+1;
-  var fresh=syncUnlocks(rec,false);
-  var newFresh=fresh.filter(function(id){return before.indexOf(id)<0;});
-  /* syncUnlocks already updated known list; compute toast here */
-  if(newFresh.length||fresh.length){
-    var ids=fresh.length?fresh:newFresh;
-    ids.forEach(function(id){ rec.equipped[id]=true; });
-    rebuildHouse(rec);
-    var names=ids.map(function(id){return accById(id).name;}).join(', ');
-    toast('♥ @'+rec.user+' liked a post ('+rec.likesGiven+' total) — unlocked: '+names+'!');
-    addFeed('♥ <b>@'+rec.user+'</b> liked a post ('+rec.likesGiven+' total) → unlocked <b>'+names+'</b>.');
-  }else{
-    addFeed('♥ <b>@'+rec.user+'</b> liked a post ('+rec.likesGiven+' total). Next unlock: '+nextLikeHint(rec)+'.');
-  }
-  if(selected===rec)selectHouse(rec,false);
-}
-function nextLikeHint(rec){
-  var nxt=ACCESSORIES.filter(function(a){return a.source==='like'&&!accUnlocked(rec,a);})[0];
-  return nxt?(nxt.name+' at '+nxt.threshold+' likes'):'all like accessories unlocked';
-}
-function liveEvent(){
-  if(livePaused)return;
-  liveIdx++;
-  var kind=liveIdx%4; /* rotate: new, existing comment, like, follow */
-  try{
-    if(kind===1){
-      var cand=LIVE_NEW.filter(function(e){return !byUser[normaliseUser(e[0])];});
-      if(cand.length){
-        var pick=cand[Math.floor(Math.random()*cand.length)];
-        var res=processComment(pick[0],pick[1]);
-        if(res.rec){
-          addFeed('💬 <b>@'+res.rec.user+'</b> commented “'+res.rec.comment+'” → house <b>auto-built</b> on '+res.rec.street+'. Claim code sent by DM.');
-          toast('@'+res.rec.user+' commented → house auto-built on '+res.rec.street+'!');
-          selectHouse(res.rec,true);
-          return;
-        }
-      }
-      kind=2; /* town full of the pool — fall through to an existing comment */
-    }
-    if(kind===2){
-      var due=houses.filter(function(r){return r.level<MAX_LEVEL;});
-      if(due.length){
-        var rec2=due[Math.floor(Math.random()*due.length)];
-        if(streakGap(rec2)===0){ townDay++; updateTownClock(); addFeed('🌙 Town moved to <b>Day '+townDay+'</b> — a new comment day begins.'); }
-        var res2=processComment(rec2.user,LIVE_COMMENTS[Math.floor(Math.random()*LIVE_COMMENTS.length)]);
-        if(res2.outcome==='upgraded'||res2.outcome==='tier-up')addFeed('💬 <b>@'+rec2.user+'</b> commented on the next day → streak '+rec2.streak+', <b>Level '+rec2.level+'</b> ('+tierName(rec2.level)+') — auto-upgraded.');
-        else if(res2.outcome==='broken')addFeed('💬 <b>@'+rec2.user+'</b> commented after a skip → streak restarted at 1, Level '+rec2.level+' kept.');
-        else if(res2.outcome==='maxed')addFeed('💬 <b>@'+rec2.user+'</b> commented → already MAX LEVEL 100, streak '+rec2.streak+'.');
-        else addFeed('💬 <b>@'+rec2.user+'</b> commented.');
-        if(selected===rec2)selectHouse(rec2,false);
-        return;
-      }
-    }
-    if(kind===3){
-      if(houses.length){ giveLike(houses[Math.floor(Math.random()*houses.length)]); return; }
-    }
-    /* follow */
-    var nonFollowers=houses.filter(function(r){return !r.isFollower;});
-    if(nonFollowers.length){
-      var rec3=nonFollowers[Math.floor(Math.random()*nonFollowers.length)];
-      rec3.isFollower=true;
-      var fresh3=syncUnlocks(rec3,false);
-      fresh3.forEach(function(id){rec3.equipped[id]=true;});
-      rebuildHouse(rec3);
-      addFeed('➕ <b>@'+rec3.user+'</b> followed @comment.town → unlocked <b>Golden mailbox + Name flag</b> (follower exclusives).');
-      toast('@'+rec3.user+' followed → Golden mailbox + Name flag unlocked!');
-      if(selected===rec3)selectHouse(rec3,false);
-      return;
-    }
-    if(houses.length)giveLike(houses[Math.floor(Math.random()*houses.length)]);
-  }catch(err){ /* a bad simulated event must never kill the town */ }
-}
-liveTimer=setInterval(liveEvent,20000);
-document.getElementById('livePauseBtn').addEventListener('click',function(){
-  livePaused=!livePaused;
-  this.textContent=livePaused?'Resume':'Pause';
-  this.setAttribute('aria-pressed',livePaused?'true':'false');
-  document.getElementById('liveDot').classList.toggle('paused',livePaused);
-  toast(livePaused?'Auto feed paused — no new simulated events.':'Auto feed resumed — events every ~20 seconds.');
-  if(!livePaused)addFeed('▶ Auto-sync resumed.');
-  else addFeed('❚❚ Auto-sync paused by you.');
+  if(!editingRec)return; saveEdits(editingRec); showModal(null); selectHouse(editingRec,true); toast('Saved on this device! @'+editingRec.user+'’s house is updated in the town.');
 });
 
 /* ================= picking ================= */
@@ -1568,7 +1478,7 @@ document.getElementById('searchForm').addEventListener('submit',function(e){
   if(byUser[q]){ selectHouse(byUser[q],true); return; }
   var partial=houses.filter(function(r){return r.user.indexOf(q)===0;});
   if(partial.length===1){ selectHouse(partial[0],true); return; }
-  toast('No house for “'+q+'” yet — claim it with the green panel!');
+  toast('No house for “'+q+'” yet — comment on the latest @housepercomment post to build one.');
 });
 
 /* ================= claim form ================= */
@@ -1584,33 +1494,6 @@ claimToggle.addEventListener('click',function(){
   if(willOpen){ if(mobileMQ.matches){ closeSheets('claim'); claimPanel.classList.add('sheet-open'); syncSheetBody(); } }
   else { claimPanel.classList.remove('sheet-open'); syncSheetBody(); }
 });
-function advanceTownDay(n,label){
-  townDay+=n;
-  updateTownClock();
-  if(selected)selectHouse(selected,false);
-  toast(label||('Town Day '+townDay+' — '+townDateStr(townDay)+'. Houses due today can upgrade; anyone who skipped has a broken streak.'));
-}
-document.getElementById('nextDayBtn').addEventListener('click',function(){ advanceTownDay(1); });
-document.getElementById('skipDayBtn').addEventListener('click',function(){ advanceTownDay(2,'Skipped a day — it is now Town Day '+townDay+' ('+townDateStr(townDay)+'). Streaks that missed yesterday are broken until their next comment restarts them.'); });
-document.getElementById('claimForm').addEventListener('submit',function(e){
-  e.preventDefault();
-  var u=document.getElementById('claimUser').value;
-  var cm=document.getElementById('claimComment').value;
-  var res=processComment(u,cm);
-  var rec=res.rec;
-  if(!rec){ toast('Could not build — the town may be full.'); return; }
-  refreshDatalist();
-  selectHouse(rec,true);
-  setClaim(false);
-  if(res.outcome==="built"){toast('Welcome to town, @'+rec.user+'! Level 1 Cottage built on '+rec.street+'. Claim code sent to your DMs (see Live panel).');addFeed('💬 <b>@'+rec.user+'</b> commented → house <b>auto-built</b> on '+rec.street+' (manual test panel). Claim code sent by DM.');}
-  else if(res.outcome==="upgraded")toast('Streak day '+rec.streak+'! @'+rec.user+' → Level '+rec.level+'/100 ('+tierName(rec.level)+').');
-  else if(res.outcome==="tier-up")toast('TIER UP! @'+rec.user+' → Level '+rec.level+'/100 — now a '+tierName(rec.level)+'!');
-  else if(res.outcome==="same-day")toast('@'+rec.user+' already commented today (Day '+townDay+'). No upgrade — use Next day, then comment again.');
-  else if(res.outcome==="broken")toast('Streak broken for @'+rec.user+' — missed '+res.missed+(res.missed===1?' day':' days')+'. Streak restarted at 1, Level '+rec.level+' kept, no upgrade today. Comment tomorrow to upgrade.');
-  else if(res.outcome==="maxed")toast('@'+rec.user+' is MAX LEVEL 100 — streak now '+rec.streak+' days!');
-  e.target.reset();
-});
-
 /* ================= how panel ================= */
 var howPanel=document.getElementById('howPanel');
 var howToggle=document.getElementById('howToggle');
@@ -1632,15 +1515,6 @@ var livePanelEl=document.getElementById('livePanel');
 var activityBtn=document.getElementById('activityBtn');
 var myHouseBtn=document.getElementById('myHouseBtn');
 var helpBtn=document.getElementById('helpBtn');
-var activityBadge=document.getElementById('activityBadge');
-var unreadActivity=0;
-function noteActivity(){
-  if(!mobileMQ.matches)return;
-  if(livePanelEl.classList.contains('sheet-open'))return;
-  unreadActivity++;
-  activityBadge.hidden=false;
-  activityBadge.textContent=unreadActivity>99?'99+':String(unreadActivity);
-}
 function syncSheetBody(){
   var any=livePanelEl.classList.contains('sheet-open')||claimPanel.classList.contains('sheet-open')||(howPanel&&howPanel.classList.contains('sheet-open'));
   document.body.classList.toggle('sheet-open',!!any);
@@ -1654,21 +1528,11 @@ function closeSheets(except){
   if(except!=='how'&&howPanel&&!howPanel.hidden){ howPanel.classList.remove('sheet-open'); howPanel.hidden=true; howToggle.setAttribute('aria-expanded','false'); if(helpBtn)helpBtn.setAttribute('aria-expanded','false'); }
   syncSheetBody();
 }
-function placeDM(){
-  var dm=document.getElementById('dmBox'); if(!dm)return;
-  if(mobileMQ.matches){
-    var slot=document.getElementById('claimDmSlot');
-    if(slot&&dm.parentNode!==slot)slot.appendChild(dm);
-  }else if(dm.parentNode!==livePanelEl){
-    livePanelEl.appendChild(dm);
-  }
-}
 activityBtn.addEventListener('click',function(){
   var open=!livePanelEl.classList.contains('sheet-open');
   if(open){
     closeSheets('live');
     livePanelEl.classList.add('sheet-open');
-    unreadActivity=0; activityBadge.hidden=true;
   }else{
     livePanelEl.classList.remove('sheet-open');
   }
@@ -1681,7 +1545,6 @@ myHouseBtn.addEventListener('click',function(){
   var open=!claimPanel.classList.contains('sheet-open');
   if(open){
     closeSheets('claim');
-    placeDM();
     setClaim(true);
     claimPanel.classList.add('sheet-open');
   }else{
@@ -1690,7 +1553,6 @@ myHouseBtn.addEventListener('click',function(){
   syncSheetBody();
 });
 helpBtn.addEventListener('click',function(){ howToggle.click(); });
-placeDM();
 
 /* graphics quality: Auto (default) / High / Low */
 var qualityMode='auto';
@@ -1724,7 +1586,6 @@ document.querySelectorAll('[data-quality]').forEach(function(btn){
 });
 function onViewportModeChange(){
   applyQuality();
-  placeDM();
   var si=document.getElementById('searchInput');
   if(si)si.placeholder=mobileMQ.matches?'Find your house…':'Find your house — type a username…';
   if(!mobileMQ.matches){ livePanelEl.classList.remove('sheet-open'); claimPanel.classList.remove('sheet-open'); if(howPanel)howPanel.classList.remove('sheet-open'); syncSheetBody(); }
@@ -1833,11 +1694,6 @@ addEventListener('resize',function(){
   renderer.setSize(innerWidth,innerHeight);
 });
 
-/* greet by flying over a featured house — card stays shut so every control stays reachable */
-setTimeout(function(){
-  var star=byUser['theo.plays'];
-  if(star){ showRing(star); flyTo(star,30); }
-},600);
 })();
 </script>
 </body>
