@@ -11,6 +11,11 @@
    "ts": "2026-11-08T00:18:57.340517+05:00",
    "type": "upgrade",
    "username": "flashquizapp"
+  },
+  {
+   "ts": "2026-11-08T14:03:59.697230+05:00",
+   "type": "house",
+   "username": "enio_dek"
   }
  ],
  "residents": [
@@ -32,8 +37,27 @@
     "name_flag"
    ],
    "username": "flashquizapp"
+  },
+  {
+   "best_streak": 1,
+   "claim_code_hash": "d275cd4890ec0f22dee27353a871717636268dbb24c7a754c55375f7a165fb23",
+   "display_comment": "ME",
+   "following": true,
+   "house_number": 2,
+   "joined_date": "2026-11-08",
+   "last_comment_date": "2026-11-08",
+   "level": 1,
+   "likes": 0,
+   "special": "founding",
+   "streak": 1,
+   "tier": "Cottage",
+   "unlocks": [
+    "golden_mailbox",
+    "name_flag"
+   ],
+   "username": "enio_dek"
   }
  ],
- "updated_at": "2026-11-08T11:36:41.389768+05:00",
+ "updated_at": "2026-11-08T14:03:59.697230+05:00",
  "version": 1
 }
