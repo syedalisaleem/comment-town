@@ -19,10 +19,12 @@
    "claim_code_hash": "3b5e679e0bff00e08e55e9d9f8165e6ef47053e9c73062390dceefaeff69ec8c",
    "display_comment": "fdgdffg",
    "following": true,
+   "house_number": 1,
    "joined_date": "2026-11-07",
    "last_comment_date": "2026-11-08",
    "level": 2,
    "likes": 0,
+   "special": "founder",
    "streak": 2,
    "tier": "Cottage",
    "unlocks": [
@@ -32,6 +34,6 @@
    "username": "flashquizapp"
   }
  ],
- "updated_at": "2026-11-08T00:18:57.340517+05:00",
+ "updated_at": "2026-11-08T11:36:41.389768+05:00",
  "version": 1
 }

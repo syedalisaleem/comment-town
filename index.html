@@ -508,6 +508,7 @@ window.addEventListener('load',function(){
   <h2>How Comment Town works</h2>
   <ol>
     <li><b>Comment = house.</b> Comment on the latest @housepercomment post on Instagram and your Level 1 Cottage gets built here on the next free plot — houses are added in batches, within about 15 minutes.</li>
+    <li><b>First 10 houses are Founding houses.</b> House #1 is the golden Founder house, and houses #2–#10 get permanent gold trim and a gold star — only 10 will ever exist, and the treatment stays forever, whatever level the house reaches.</li>
     <li><b>Comment again the next day to level up.</b> A comment on the next consecutive day adds +1 level and grows your streak. Same-day repeats do nothing. Skip a day and your streak restarts — your level is kept. 100 levels, 10 tiers, all the way to the Legend Mansion.</li>
     <li><b>Like &amp; follow = decorations.</b> Likes unlock flower pots (1), the paint palette (3), a garden tree (5), the fence pack (7), string lights (10), a fountain (15) and a dog house (20). Following the page unlocks the golden mailbox + name flag. Streaks unlock a welcome mat (3 days), chimney smoke (7), a garden bench (14) and party bunting (30).</li>
     <li><b>Edit only your own house:</b> tap your house → “Edit my house” → enter the 4-digit claim code that was DM'd to you by @housepercomment. Place your unlocked decorations and repaint with the paint palette.</li>
@@ -963,6 +964,10 @@ function buildHouseMesh(rec){
   if(rec.wallColor!=null)wall=rec.wallColor;
   if(rec.roofColor!=null)roofC=rec.roofColor;
   rec._wallHex=wall; rec._roofHex=roofC;
+  /* Top-10 special treatment (Ali's rule, 2026-11-08): House #1 is the
+     golden Founder house; houses #2-#10 are gold-trim Founding houses. */
+  var isFounder=rec.special==='founder', isFounding=rec.special==='founding';
+  if(isFounder&&rec.roofColor==null){ roofC=0xd4a017; rec._roofHex=roofC; }
   var roofType=tier>=7?1:(tier>=3?((h>>7)%2):(h>>7)%3); /* high tiers: gabled grandeur */
   var g=new THREE.Group();
   var wallMat=new THREE.MeshLambertMaterial({color:wall});
@@ -977,6 +982,10 @@ function buildHouseMesh(rec){
 
   var plotBase=new THREE.Mesh(new THREE.BoxGeometry(11,0.22,11),new THREE.MeshLambertMaterial({color:plotCol}));
   plotBase.position.y=0.11;plotBase.receiveShadow=true;g.add(plotBase);
+  if(isFounder||isFounding){ /* permanent gold trim under Founding plots */
+    var goldTrim=new THREE.Mesh(new THREE.BoxGeometry(11.8,0.14,11.8),goldMat);
+    goldTrim.position.y=0.04;goldTrim.receiveShadow=true;g.add(goldTrim);
+  }
   if(tier>=5){ /* stone border for estates and up */
     var border=new THREE.Mesh(new THREE.BoxGeometry(11.3,0.3,11.3),new THREE.MeshLambertMaterial({color:0xb8b0a6}));
     border.position.y=0.05;g.add(border);
@@ -1154,6 +1163,12 @@ function buildHouseMesh(rec){
   rec._sign=sign;
   rec._floors=floors; rec._bodyH=bodyH;
 
+  if(isFounder||isFounding){ /* gold star floating over Founding houses */
+    var sStar=new THREE.Mesh(new THREE.OctahedronGeometry(isFounder?0.85:0.55),new THREE.MeshBasicMaterial({color:0xffc53d}));
+    sStar.position.y=roofTopY+3.3; sStar.name='roofStar'; g.add(sStar); animatedStars.push(sStar);
+    g.scale.setScalar(isFounder?1.16:1.07);
+  }
+
   g.position.set(rec.pos.x,0,rec.pos.z);
   g.rotation.y=(rec.plot%2===0)?0:Math.PI;
   if(rec.pos.z>0&&rec.plot%2===0)g.rotation.y=Math.PI;
@@ -1175,6 +1190,8 @@ function addHouse(data){
   while(Math.abs(p.x)<9&&Math.abs(p.z)<9){ idx=nextPlot++; p=plotPos(idx); if(nextPlot>TOTAL_PLOTS)break; }
   var rec={user:user,
            comment:(data.display_comment?cleanText(data.display_comment):null),
+           houseNumber:Math.max(1,parseInt(data.house_number,10)||(idx+1)),
+           special:(data.special==='founder'||data.special==='founding')?data.special:null,
            level:Math.max(1,Math.min(MAX_LEVEL,parseInt(data.level,10)||1)),
            pos:p,plot:idx,
            street:STREETS[hashStr(user)%STREETS.length],plotNo:idx+1,
@@ -1316,6 +1333,8 @@ function selectHouse(rec,fly){
   var meta=document.getElementById('detailMeta');meta.innerHTML="";
   function addTag(txt,cls){ var s=document.createElement('span');s.className='tag'+(cls?' '+cls:'');s.textContent=txt;meta.appendChild(s); }
   addTag('Level '+rec.level+'/100 · '+tierName(rec.level),'hot');
+  if(rec.special==='founder')addTag('⭐ Founder — House #1','hot');
+  else if(rec.special==='founding')addTag('⭐ Founding 10 — House #'+rec.houseNumber,'hot');
   addTag('Streak: '+rec.streak+' days');
   addTag('Best streak: '+rec.bestStreak+' days');
   addTag('♥ '+(rec.likesGiven||0)+' likes');
