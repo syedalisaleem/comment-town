@@ -21,6 +21,11 @@
    "ts": "2026-11-09T06:17:00+05:00",
    "type": "house",
    "username": "charlotte.mergen"
+  },
+  {
+   "ts": "2026-11-09T22:25:11.072702+05:00",
+   "type": "claim_dm_manual",
+   "username": "enio_dek"
   }
  ],
  "residents": [
@@ -79,6 +84,6 @@
    "username": "charlotte.mergen"
   }
  ],
- "updated_at": "2026-11-09T11:19:12.882561+05:00",
+ "updated_at": "2026-11-09T22:28:24.470896+05:00",
  "version": 1
 }
