@@ -16,6 +16,11 @@
    "ts": "2026-11-08T14:03:59.697230+05:00",
    "type": "house",
    "username": "enio_dek"
+  },
+  {
+   "ts": "2026-11-09T06:17:00+05:00",
+   "type": "house",
+   "username": "charlotte.mergen"
   }
  ],
  "residents": [
@@ -56,8 +61,24 @@
     "name_flag"
    ],
    "username": "enio_dek"
+  },
+  {
+   "best_streak": 1,
+   "claim_code_hash": "e1913fb877aaa729aac27421eddb2f0dfa83a905e0b3dffaf9b558976fdb263b",
+   "display_comment": "me!!",
+   "following": false,
+   "house_number": 3,
+   "joined_date": "2026-11-09",
+   "last_comment_date": "2026-11-09",
+   "level": 1,
+   "likes": 0,
+   "special": "founding",
+   "streak": 1,
+   "tier": "Cottage",
+   "unlocks": [],
+   "username": "charlotte.mergen"
   }
  ],
- "updated_at": "2026-11-08T14:03:59.697230+05:00",
+ "updated_at": "2026-11-09T11:19:12.882561+05:00",
  "version": 1
 }
