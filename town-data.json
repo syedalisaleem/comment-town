@@ -26,6 +26,11 @@
    "ts": "2026-11-09T22:25:11.072702+05:00",
    "type": "claim_dm_manual",
    "username": "enio_dek"
+  },
+  {
+   "ts": "2026-11-25T17:33:56.262828+05:00",
+   "type": "house",
+   "username": "sockforsocks"
   }
  ],
  "residents": [
@@ -82,8 +87,24 @@
    "tier": "Cottage",
    "unlocks": [],
    "username": "charlotte.mergen"
+  },
+  {
+   "best_streak": 1,
+   "claim_code_hash": "2953c82907cdcd4dcf51ebf00749952e1f6197566d52bba01596f148dab40033",
+   "display_comment": "hi",
+   "following": false,
+   "house_number": 4,
+   "joined_date": "2026-11-25",
+   "last_comment_date": "2026-11-25",
+   "level": 1,
+   "likes": 0,
+   "special": "founding",
+   "streak": 1,
+   "tier": "Cottage",
+   "unlocks": [],
+   "username": "sockforsocks"
   }
  ],
- "updated_at": "2026-11-09T22:28:24.470896+05:00",
+ "updated_at": "2026-11-25T17:33:56.262828+05:00",
  "version": 1
 }
