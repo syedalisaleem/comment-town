@@ -31,6 +31,11 @@
    "ts": "2026-11-25T17:33:56.262828+05:00",
    "type": "house",
    "username": "sockforsocks"
+  },
+  {
+   "ts": "2026-11-25T21:33:58.169053+05:00",
+   "type": "house",
+   "username": "alexanderthegreat2033"
   }
  ],
  "residents": [
@@ -103,8 +108,27 @@
    "tier": "Cottage",
    "unlocks": [],
    "username": "sockforsocks"
+  },
+  {
+   "best_streak": 1,
+   "claim_code_hash": "efc6e2431421e5879bea73995b8edecf866979176ee6047c5ee95cb376197477",
+   "display_comment": "make me have a mansion please",
+   "following": true,
+   "house_number": 5,
+   "joined_date": "2026-11-25",
+   "last_comment_date": "2026-11-25",
+   "level": 1,
+   "likes": 0,
+   "special": "founding",
+   "streak": 1,
+   "tier": "Cottage",
+   "unlocks": [
+    "golden_mailbox",
+    "name_flag"
+   ],
+   "username": "alexanderthegreat2033"
   }
  ],
- "updated_at": "2026-11-25T17:33:56.262828+05:00",
+ "updated_at": "2026-11-25T21:33:58.169053+05:00",
  "version": 1
 }
