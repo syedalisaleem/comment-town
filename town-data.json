@@ -36,6 +36,16 @@
    "ts": "2026-11-25T21:33:58.169053+05:00",
    "type": "house",
    "username": "alexanderthegreat2033"
+  },
+  {
+   "ts": "2026-11-26T00:17:43.882617+05:00",
+   "type": "house",
+   "username": "_jz.lalramsan"
+  },
+  {
+   "ts": "2026-11-26T00:17:44.882617+05:00",
+   "type": "house",
+   "username": "lam_nei_mawi.__"
   }
  ],
  "residents": [
@@ -127,8 +137,40 @@
     "name_flag"
    ],
    "username": "alexanderthegreat2033"
+  },
+  {
+   "best_streak": 1,
+   "claim_code_hash": "602f0d59b8f8f38653b99545215f7b4fa3372df715ee9a3bcda9a227613b918a",
+   "display_comment": "Hello!! If I can do smth with my house, can I have a kitty cat on top of my roof?",
+   "following": false,
+   "house_number": 6,
+   "joined_date": "2026-11-26",
+   "last_comment_date": "2026-11-25",
+   "level": 1,
+   "likes": 0,
+   "special": "founding",
+   "streak": 1,
+   "tier": "Cottage",
+   "unlocks": [],
+   "username": "_jz.lalramsan"
+  },
+  {
+   "best_streak": 1,
+   "claim_code_hash": "559d55167ad8c788e2ecff08de9629bf117f7463464f61c989fe990f80ce5ccb",
+   "display_comment": "Can i have a hello kitty house",
+   "following": false,
+   "house_number": 7,
+   "joined_date": "2026-11-26",
+   "last_comment_date": "2026-11-25",
+   "level": 1,
+   "likes": 0,
+   "special": "founding",
+   "streak": 1,
+   "tier": "Cottage",
+   "unlocks": [],
+   "username": "lam_nei_mawi.__"
   }
  ],
- "updated_at": "2026-11-25T21:33:58.169053+05:00",
+ "updated_at": "2026-11-26T00:17:43.957109+05:00",
  "version": 1
 }
