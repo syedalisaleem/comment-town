@@ -52,6 +52,7 @@
   {
    "best_streak": 2,
    "claim_code_hash": "3b5e679e0bff00e08e55e9d9f8165e6ef47053e9c73062390dceefaeff69ec8c",
+   "custom": null,
    "display_comment": "fdgdffg",
    "following": true,
    "house_number": 1,
@@ -71,6 +72,7 @@
   {
    "best_streak": 1,
    "claim_code_hash": "d275cd4890ec0f22dee27353a871717636268dbb24c7a754c55375f7a165fb23",
+   "custom": null,
    "display_comment": "ME",
    "following": true,
    "house_number": 2,
@@ -90,6 +92,7 @@
   {
    "best_streak": 1,
    "claim_code_hash": "e1913fb877aaa729aac27421eddb2f0dfa83a905e0b3dffaf9b558976fdb263b",
+   "custom": null,
    "display_comment": "me!!",
    "following": false,
    "house_number": 3,
@@ -106,6 +109,7 @@
   {
    "best_streak": 1,
    "claim_code_hash": "2953c82907cdcd4dcf51ebf00749952e1f6197566d52bba01596f148dab40033",
+   "custom": null,
    "display_comment": "hi",
    "following": false,
    "house_number": 4,
@@ -122,6 +126,7 @@
   {
    "best_streak": 1,
    "claim_code_hash": "efc6e2431421e5879bea73995b8edecf866979176ee6047c5ee95cb376197477",
+   "custom": null,
    "display_comment": "make me have a mansion please",
    "following": true,
    "house_number": 5,
@@ -141,6 +146,7 @@
   {
    "best_streak": 1,
    "claim_code_hash": "602f0d59b8f8f38653b99545215f7b4fa3372df715ee9a3bcda9a227613b918a",
+   "custom": "roof_cat",
    "display_comment": "Hello!! If I can do smth with my house, can I have a kitty cat on top of my roof?",
    "following": false,
    "house_number": 6,
@@ -157,6 +163,7 @@
   {
    "best_streak": 1,
    "claim_code_hash": "559d55167ad8c788e2ecff08de9629bf117f7463464f61c989fe990f80ce5ccb",
+   "custom": "pink_cat",
    "display_comment": "Can i have a hello kitty house",
    "following": false,
    "house_number": 7,
@@ -171,6 +178,6 @@
    "username": "lam_nei_mawi.__"
   }
  ],
- "updated_at": "2026-11-26T00:17:43.957109+05:00",
+ "updated_at": "2026-11-26T00:21:56.142973+05:00",
  "version": 1
 }
