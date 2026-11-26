@@ -974,6 +974,12 @@ function buildHouseMesh(rec){
     if(rec.wallColor==null){ wall=0xf9a8d4; rec._wallHex=wall; }
     if(rec.roofColor==null){ roofC=0xec4899; rec._roofHex=roofC; }
   }
+  /* Custom house (Ali, 2026-11-26): absolutemclaren asked for a
+     gingerbread house — gingerbread-brown walls, chocolate roof. */
+  if(rec.custom==='gingerbread'){
+    if(rec.wallColor==null){ wall=0x9a5a2e; rec._wallHex=wall; }
+    if(rec.roofColor==null){ roofC=0x5a3421; rec._roofHex=roofC; }
+  }
   var roofType=tier>=7?1:(tier>=3?((h>>7)%2):(h>>7)%3); /* high tiers: gabled grandeur */
   var g=new THREE.Group();
   var wallMat=new THREE.MeshLambertMaterial({color:wall});
@@ -1201,6 +1207,57 @@ function buildHouseMesh(rec){
     var knot=new THREE.Mesh(new THREE.SphereGeometry(0.13,7,6),bowMat);
     knot.position.set(0,bodyH+0.28,D/2+0.2);g.add(knot);
   }
+  if(rec.custom==='gingerbread'){
+    /* White icing along the roof's front edge + drip dots, candy poles
+       by the path and a gumdrop row: unmistakably gingerbread. */
+    var icingMat=new THREE.MeshLambertMaterial({color:0xfffaf0});
+    for(var ix=-W/2+0.3;ix<=W/2-0.2;ix+=0.55){
+      var dot=new THREE.Mesh(new THREE.SphereGeometry(0.14,6,6),icingMat);
+      dot.position.set(ix,bodyH+0.32,D/2+0.32);g.add(dot);
+      var drip=new THREE.Mesh(new THREE.SphereGeometry(0.09,6,6),icingMat);
+      drip.position.set(ix+0.24,bodyH+0.05,D/2+0.3);g.add(drip);
+    }
+    [-1.5,1.5].forEach(function(px){
+      var pole=new THREE.Mesh(new THREE.CylinderGeometry(0.09,0.09,1.5,6),icingMat);
+      pole.position.set(px,0.95,D/2+1.1);g.add(pole);
+      var swirl=new THREE.Mesh(new THREE.SphereGeometry(0.24,7,6),new THREE.MeshLambertMaterial({color:0xd9534f}));
+      swirl.position.set(px,1.85,D/2+1.1);swirl.castShadow=true;g.add(swirl);
+    });
+    var gumCols=[0xff6b9d,0xffc53d,0x7ddb6a,0x6ab8ff,0xc084fc];
+    for(var gi=0;gi<5;gi++){
+      var gum=new THREE.Mesh(new THREE.ConeGeometry(0.2,0.34,7),new THREE.MeshLambertMaterial({color:gumCols[gi]}));
+      gum.position.set(-3.4+gi*1.7,0.37,4.55);g.add(gum);
+    }
+  }
+  if(rec.custom==='treehouse'){
+    /* jyj_spamm asked for a treehouse: a big tree on the plot with a
+       little cabin in its canopy and a ladder up the trunk. */
+    var woodMat=new THREE.MeshLambertMaterial({color:0x8a5a33});
+    var leafMat=new THREE.MeshLambertMaterial({color:0x2e9e5b,flatShading:true});
+    var tree=new THREE.Group();
+    var trunk=new THREE.Mesh(new THREE.CylinderGeometry(0.42,0.58,5.2,7),woodMat);
+    trunk.position.y=2.6;trunk.castShadow=true;tree.add(trunk);
+    [[0,6.1,0,1.7],[1.1,5.5,0.3,1.25],[-1.05,5.6,-0.3,1.2],[0.2,5.4,-1,1.05]].forEach(function(c){
+      var can=new THREE.Mesh(new THREE.SphereGeometry(c[3],8,7),leafMat);
+      can.position.set(c[0],c[1],c[2]);can.castShadow=true;tree.add(can);
+    });
+    var cabin=new THREE.Mesh(new THREE.BoxGeometry(1.9,1.4,1.9),new THREE.MeshLambertMaterial({color:0xb07a45}));
+    cabin.position.set(0,4.35,0);cabin.castShadow=true;tree.add(cabin);
+    var cRoof=new THREE.Mesh(new THREE.ConeGeometry(1.75,0.95,4),new THREE.MeshLambertMaterial({color:0x6b4a2f,flatShading:true}));
+    cRoof.rotation.y=Math.PI/4;cRoof.position.y=5.5;tree.add(cRoof);
+    var cWin=new THREE.Mesh(new THREE.BoxGeometry(0.55,0.55,0.08),new THREE.MeshBasicMaterial({color:0xffe9a8}));
+    cWin.position.set(0,4.45,0.97);tree.add(cWin);
+    [-0.32,0.32].forEach(function(lx){
+      var rail=new THREE.Mesh(new THREE.BoxGeometry(0.09,3.6,0.09),woodMat);
+      rail.position.set(lx,1.95,0.62);rail.rotation.x=0.18;tree.add(rail);
+    });
+    for(var ri=0;ri<5;ri++){
+      var rung=new THREE.Mesh(new THREE.BoxGeometry(0.72,0.08,0.08),woodMat);
+      rung.position.set(0,0.75+ri*0.68,0.68-ri*0.12);tree.add(rung);
+    }
+    tree.position.set(-3.55,0.2,-3.3);
+    g.add(tree);
+  }
 
   var sign=nameSprite(rec.user,roofC);
   sign.position.y=roofTopY+1.55;
@@ -1237,7 +1294,7 @@ function addHouse(data){
            comment:(data.display_comment?cleanText(data.display_comment):null),
            houseNumber:Math.max(1,parseInt(data.house_number,10)||(idx+1)),
            special:(data.special==='founder'||data.special==='founding')?data.special:null,
-           custom:(data.custom==='roof_cat'||data.custom==='pink_cat')?data.custom:null,
+           custom:(data.custom==='roof_cat'||data.custom==='pink_cat'||data.custom==='gingerbread'||data.custom==='treehouse')?data.custom:null,
            level:Math.max(1,Math.min(MAX_LEVEL,parseInt(data.level,10)||1)),
            pos:p,plot:idx,
            street:STREETS[hashStr(user)%STREETS.length],plotNo:idx+1,
@@ -1383,6 +1440,8 @@ function selectHouse(rec,fly){
   else if(rec.special==='founding')addTag('⭐ Founding 10 — House #'+rec.houseNumber,'hot');
   if(rec.custom==='roof_cat')addTag('🐱 Custom: kitty cat on the roof','hot');
   else if(rec.custom==='pink_cat')addTag('🐱 Custom: pink cat house','hot');
+  else if(rec.custom==='gingerbread')addTag('🍪 Custom: gingerbread house','hot');
+  else if(rec.custom==='treehouse')addTag('🌳 Custom: treehouse','hot');
   addTag('Streak: '+rec.streak+' days');
   addTag('Best streak: '+rec.bestStreak+' days');
   addTag('♥ '+(rec.likesGiven||0)+' likes');

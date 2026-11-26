@@ -52,6 +52,16 @@
    "ts": "2026-11-26T01:04:03.823185+05:00",
    "type": "upgrade",
    "username": "alexanderthegreat2033"
+  },
+  {
+   "ts": "2026-11-26T16:45:47.403082+05:00",
+   "type": "house",
+   "username": "absolutemclaren"
+  },
+  {
+   "ts": "2026-11-26T16:45:48.403082+05:00",
+   "type": "house",
+   "username": "jyj_spamm"
   }
  ],
  "residents": [
@@ -182,8 +192,42 @@
    "tier": "Cottage",
    "unlocks": [],
    "username": "lam_nei_mawi.__"
+  },
+  {
+   "best_streak": 1,
+   "claim_code_hash": "4ee43e341d8e5b88ace357f934336037e0fd71d5d3e1f5836acc0ff1d404b059",
+   "custom": "gingerbread",
+   "display_comment": "Gingerbread house",
+   "following": false,
+   "house_number": 8,
+   "joined_date": "2026-11-26",
+   "last_comment_date": "2026-11-26",
+   "level": 1,
+   "likes": 0,
+   "special": "founding",
+   "streak": 1,
+   "tier": "Cottage",
+   "unlocks": [],
+   "username": "absolutemclaren"
+  },
+  {
+   "best_streak": 1,
+   "claim_code_hash": "6910f25adca43cf213ed413abdd9b385f2f3dc7af7a6c015088de10512a3a5e6",
+   "custom": "treehouse",
+   "display_comment": "Hello! CAN I pretty pleaaaase have a treehouse?",
+   "following": false,
+   "house_number": 9,
+   "joined_date": "2026-11-26",
+   "last_comment_date": "2026-11-26",
+   "level": 1,
+   "likes": 0,
+   "special": "founding",
+   "streak": 1,
+   "tier": "Cottage",
+   "unlocks": [],
+   "username": "jyj_spamm"
   }
  ],
- "updated_at": "2026-11-26T13:03:59.520513+05:00",
+ "updated_at": "2026-11-26T16:46:04.661571+05:00",
  "version": 1
 }
