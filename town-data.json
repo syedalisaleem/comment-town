@@ -46,6 +46,12 @@
    "ts": "2026-11-26T00:17:44.882617+05:00",
    "type": "house",
    "username": "lam_nei_mawi.__"
+  },
+  {
+   "level": 2,
+   "ts": "2026-11-26T01:04:03.823185+05:00",
+   "type": "upgrade",
+   "username": "alexanderthegreat2033"
   }
  ],
  "residents": [
@@ -124,18 +130,18 @@
    "username": "sockforsocks"
   },
   {
-   "best_streak": 1,
+   "best_streak": 2,
    "claim_code_hash": "efc6e2431421e5879bea73995b8edecf866979176ee6047c5ee95cb376197477",
    "custom": null,
-   "display_comment": "make me have a mansion please",
+   "display_comment": "Firstttttt",
    "following": true,
    "house_number": 5,
    "joined_date": "2026-11-25",
-   "last_comment_date": "2026-11-25",
-   "level": 1,
+   "last_comment_date": "2026-11-26",
+   "level": 2,
    "likes": 0,
    "special": "founding",
-   "streak": 1,
+   "streak": 2,
    "tier": "Cottage",
    "unlocks": [
     "golden_mailbox",
@@ -178,6 +184,6 @@
    "username": "lam_nei_mawi.__"
   }
  ],
- "updated_at": "2026-11-26T00:21:56.142973+05:00",
+ "updated_at": "2026-11-26T01:04:03.823185+05:00",
  "version": 1
 }
